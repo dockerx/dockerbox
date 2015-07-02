@@ -25,3 +25,10 @@ build/Release
 # Dependency directory
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
 node_modules
+
+#The application tempfiles
+tempfiles
+docker/tempfiles
+
+#The secrets file for the gauth and App host configs
+secrets.json

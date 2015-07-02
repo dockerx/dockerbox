@@ -1,0 +1,13 @@
+.header
+	a#logo(href='/') 
+		b D
+		| ocker
+		b B
+		| ox
+	#user
+		- var user = common.user;
+		if user
+			img(src=user.picture, alt=user.name, title=user.name)
+			a(href='/logout') Logout
+	a#addimagebutton.button(href="/createimage") Create Image
+	a#addserverbutton.button(href="/createserver") Create Server
