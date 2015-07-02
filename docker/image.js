@@ -3,10 +3,11 @@ var exec = require('child_process').exec,
 	spawn = require('child_process').spawn,
 	fs = require('fs'),
 	tempFolder = __dirname + '/tempfiles/dockerfiles/',
-	registry = require(__dirname + '/../secrets.json').registry,
-	registryHost = require(__dirname + '/../secrets.json').registry_host,
+	secrets = require(__dirname + '/../secrets.json'),
+	registry = secrets.registry,
 	registry = registry ? registry+'/' : '',
-	host = process.env.DOCKER_HOST,
+	host = secrets.swarm_host,
+	registryHost = secrets.registry_host || host || '$DOCKER_HOST',
 	async = require('async');
 
 module.exports = {
@@ -38,6 +39,11 @@ module.exports = {
 	},
 
 	push : function(name, stream, cb) { // push to registry
+		if(!registry) {
+			stream.data += '\nPush to registry cancelled since no registry configured.'
+			return cb(0);
+		}
+
 		//Retag the image for your local repoistory
 		var command = 'docker';
 	    if(host) command += ' -H ' + registryHost; 	

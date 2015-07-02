@@ -3,9 +3,12 @@ var exec = require('child_process').exec,
 	fs = require('fs'),
 	tempFolder = __dirname + '/tempfiles/composefolders/',
 	async = require('async'),
-	registry = require(__dirname + '/../secrets.json').registry,
+	secrets = require(__dirname + '/../secrets.json'),
+	registry = secrets.registry,
 	registry = registry ? registry+'/' : '',
-	host = process.env.DOCKER_HOST;
+	host = secrets.swarm_host;
+
+	process.env.DOCKER_HOST = host;
 
 module.exports = {
 	start: function(name, serverStructure, stream, cb) {
