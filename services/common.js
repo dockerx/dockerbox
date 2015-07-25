@@ -1,5 +1,6 @@
 var dynamichaproxy = require("dynamichaproxy");
 var db = require("./db");
+var secrets = require('../secrets.json');
 
 module.exports = {
 
@@ -53,7 +54,8 @@ module.exports = {
 
 	renderData : function(req) {
 		return {
-			user : req.session.user
+			user : req.session.user,
+			gaTrackingId : secrets.gaTrackingId
 		};
 	},
 
