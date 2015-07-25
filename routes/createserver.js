@@ -10,6 +10,11 @@ var portManager = require('../services/portmanager');
 var restartHap = true;
 var async = require('async');
 
+//Messages
+var messages = {
+	nameTaken : 'This name already taken. Please try a different name.'
+};
+
 /* GET home page. */
 router.get('/createserver', function(req, res, next) {
 	async.parallel([common.getServerlist, common.getImagelist], function(err, result){
@@ -40,28 +45,62 @@ router.post('/createserver', function(req, res) {
 	req.body.created_on = Date();
 	req.body.streamId = stream.id;
 	assignPort(app);
-	db.create('qa', name, req.body, function(err) {
-		if (err) {
+
+	//check if name already taken
+	hostNameAvailable(name, function(err, available){
+		if(available) proceed();
+		else {
 			res.json({
 				status : 'error',
-				err : err
+				err : err || messages.nameTaken
 			});
-			return;
-		}	
-		docker.compose.start(name, app, stream, function(exitCode){
-			var updateData = { // Updateing the app also, since the app object got the running host properties - http_forward_host, terminal_forward_host
-				compose_status : exitCode,
-				app : app
-			};
-			if(exitCode === 0) common.proxyRules('addHttpProxy', name, app, restartHap);
-			common.completeAction('qa', stream, exitCode, updateData, name);
+		}
+	});
+
+	function proceed(){
+		db.create('qa', name, req.body, function(err) {
+			if (err) {
+				res.json({
+					status : 'error',
+					err : err
+				});
+				return;
+			}	
+			docker.compose.start(name, app, stream, function(exitCode){
+				var updateData = { // Updateing the app also, since the app object got the running host properties - http_forward_host, terminal_forward_host
+					compose_status : exitCode,
+					app : app
+				};
+				if(exitCode === 0) common.proxyRules('addHttpProxy', name, app, restartHap);
+				common.completeAction('qa', stream, exitCode, updateData, name);
+			});
+			res.json({
+				status : 'success',
+				redirect : '/discover/server/'+name
+			});	
 		});
+	}
+});
+
+router.post('/createserver/checkhostname', function(req, res) {
+	hostNameAvailable(req.body.name, function(err, available){
 		res.json({
-			status : 'success',
-			redirect : '/discover/server/'+name
-		});	
+			status : err || 'success',
+			available : available,
+			message : (!available ? messages.nameTaken : null) 
+		});
 	});
 });
+
+function hostNameAvailable(name, cb) {
+	var reserverdNames = ['www', 'couchdb'];
+	common.getServerlist(function(err, servers){
+		servers.rows.forEach(function(doc){
+			reserverdNames.push(doc.value.name);
+		});
+		cb(err, reserverdNames.indexOf(name) === -1);
+	});
+}
 
 function assignPort(app) {
 	app.http_forward_port = portManager.getPort();

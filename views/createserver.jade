@@ -29,7 +29,8 @@ block content
 					h2 Server Details
 					.pure-control-group
 						label Name
-						input#qaname(placeholder='Host name' required pattern="[A-Za-z0-9]*" data-validation="Any characters otherthan A-Z or a-z or 0-9 is not allowed for image name.")
+						input#qaname(onchange='checkHostName(this)' placeholder='Host name' required pattern="[a-z0-9]*" data-validation="Hostname is allowed only with a-z and 0-9")
+						#hostmessage
 					.pure-control-group
 						label Image Name : FQDN (domain name)
 						.appblock
@@ -113,6 +114,8 @@ block content
 		|			compose_status : 'processing',
 		|			ttl : document.querySelector('#ttl').value
 		|	};
+		|	if(!data.app.image) {alert('Atleast one image in mandatory to create a server'); return;}
+		| 	if(invalidImage(data.app)) return;
 		|	document.querySelector('#processing').classList.remove('hidden');
 		|	$.post('', data, function(res){
 		|		if(res.redirect) {
@@ -140,8 +143,26 @@ block content
 		|	});
 		|	return app;
 		| }
+		| 
+		| function checkHostName(n) {
+		| 	if(!validate(n)) return;
+		|	$.post('/createserver/checkhostname', {name:n.value}, function(res){
+		|		document.querySelector('#hostmessage').innerHTML = res.message;
+		|	});			
+		| }
+		| 
 		| function validate(n) {
 		|	var name = n || document.querySelector('#qaname');
-		|	if(!name.checkValidity()) alert(name.dataset.validation);
+		|	if(!name.checkValidity()) document.querySelector('#hostmessage').innerHTML = name.dataset.validation;
 		|	return name.checkValidity();
+		| }
+		| 
+		| function invalidImage(a) {
+		| 	var app = a || getApp(),
+		| 	invalid = !has(app.image);
+		| 	invalid && alert('The image : ' + app.image + ' is not available');
+		| 	return invalid || app.dependency.some(function(d){
+		| 		return invalidImage(d);
+		| 	});
+		| 	function has(i) {return (imageList.indexOf(i) > -1);}
 		| }

@@ -393,6 +393,10 @@ label {
 	letter-spacing: 1px;
 	padding: 5px 20px;
 }
+#create_new_wrapper #hostmessage {
+	color: red;
+}
+
 #create_new_wrapper .aname input {
 	padding: .5em .6em !important;
 	margin: inherit !important;
