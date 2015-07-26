@@ -41,7 +41,7 @@ var app = express();
 //Redirect all non-www to www except subdomains
 app.get('/*', function (req, res, next) {
   if (secrets.web.domain && !req.headers.host.match(new RegExp('^' + secrets.web.domain))) {
-    res.redirect(secrets.web.domain + req.url);
+    res.redirect((secrets.http || 'http') + '://' + secrets.web.domain + req.url);
   } else {
     next();     
   }
