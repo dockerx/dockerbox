@@ -10,6 +10,8 @@ var portManager = require('../services/portmanager');
 var restartHap = true;
 var async = require('async');
 
+//Constants
+var reserverdNames = ['www'];
 //Messages
 var messages = {
 	nameTaken : 'This name already taken. Please try a different name.'
@@ -93,7 +95,6 @@ router.post('/createserver/checkhostname', function(req, res) {
 });
 
 function hostNameAvailable(name, cb) {
-	var reserverdNames = ['www', 'couchdb'];
 	common.getServerlist(function(err, servers){
 		servers.rows.forEach(function(doc){
 			reserverdNames.push(doc.value.name);

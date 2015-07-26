@@ -1,8 +1,9 @@
 var secrets = require('../secrets.json');
+var common = require('./common.js');
 
 module.exports = {
 	deleteAuth : function(owner, req) {
-		if(isAdmin(req.session.user && req.session.user.email)) return true;
+		if(common.isAdmin(req.session.user && req.session.user.email)) return true;
 		if(owner && owner.email && req.session.user && req.session.user.email && (owner.email != req.session.user.email)) {
 			return false;
 		}
@@ -17,6 +18,3 @@ module.exports = {
 
 }
 
-function isAdmin(email) {
-	return secrets.admin.indexOf(email) > -1;
-}

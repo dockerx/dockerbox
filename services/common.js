@@ -69,5 +69,9 @@ module.exports = {
 
 	errorHandler : function(req, res) {
 		res.render('error');
+	},
+
+	isAdmin : function(email) {
+		return secrets.admin.indexOf(email) > -1;
 	}
-}
+};
