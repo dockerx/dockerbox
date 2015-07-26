@@ -9,6 +9,8 @@ var db = require('./services/db');
 var portmanager = require('./services/portmanager');
 var common = require('./services/common');
 var http = require('http');
+var secrets = require('./secrets.json');
+
 http.globalAgent.maxSockets = Infinity;
 
 require("dynamichaproxy").init();
@@ -35,6 +37,15 @@ db.read('qa', function(err, body){
 var routes = require('./routes/index');
 
 var app = express();
+
+//Redirect all non-www to www except subdomains
+app.get('/*', function (req, res, next) {
+  if (!req.headers.host.match(/localhost/) && !req.headers.host.match(/^www\./)){
+    res.redirect(secrets.web.domain + req.url);
+  } else {
+    next();     
+  }
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
