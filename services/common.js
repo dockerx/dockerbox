@@ -73,5 +73,19 @@ module.exports = {
 
 	isAdmin : function(email) {
 		return secrets.admin.indexOf(email) > -1;
+	},
+
+	unlessMW : function(path, middleware) {
+	    return function(req, res, next) {
+	        if(req.url.match(path)) next();
+	        else middleware.apply(this, arguments);
+	    };
 	}
 };
+
+
+
+
+
+
+

@@ -53,8 +53,8 @@ app.set('view engine', 'jade');
 
 app.use(favicon());
 app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
+app.use(common.unlessMW(/^\/database/, bodyParser.json()));
+app.use(common.unlessMW(/^\/database/, bodyParser.urlencoded()));
 app.use(cookieParser());
 app.use(session({
     secret: 'myntra dockerbox', 
