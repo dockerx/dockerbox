@@ -5,7 +5,7 @@ var router = express.Router();
 var request = require('request');
 var common = require('../services/common.js');
 
-router.all(['/database', '/database/*'], function(req, res, next) {
+router.all(['/_utils', '/_utils/*'], function(req, res, next) {
     if(!common.isAdmin(req.session.user && req.session.user.email)) return next();
     req.pipe(request(getUrl(req.url))).pipe(res);
 });
