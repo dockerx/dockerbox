@@ -12,7 +12,7 @@ router.all(['/_utils', '/_utils/*'], function(req, res, next) {
 
 function getUrl(url) {
     //Path.join is not working with request.pipe. So this hack for removing the extra / in the secrets.db
-    return secrets.db.replace(/\/$/, '') + url.replace(/^\/database/, '');
+    return secrets.db.replace(/\/$/, '') + url;
 }
 
 module.exports = router;
