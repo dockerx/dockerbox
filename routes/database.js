@@ -8,7 +8,7 @@ var common = require('../services/common.js');
 
 router.get(['/database', '/database/*'], function(req, res, next) {
     if(!common.isAdmin(req.session.user && req.session.user.email)) return next();
-    req.pipe(request(secrets.db + req.url.replace(/^\/database/, ''))).pipe(res);
+    req.pipe(request(path.join(secrets.db, req.url.replace(/^\/database/, '')))).pipe(res);
 });
 
 module.exports = router;
