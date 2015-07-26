@@ -13,7 +13,7 @@ router.get('/discover/server/:servername', function(req, res, next) {
 	db.read('qa', function(err, body) {
 		if(err) return next();
 		body.serverList = getServerList(body.app);
-		body.domainName = secrets.web.domain;
+		body.domainName = secrets.mainhost;
 		body.common = common.renderData(req);
 		res.render('discoverserver', body);
 	}, req.params.servername);
