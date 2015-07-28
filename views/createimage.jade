@@ -77,7 +77,7 @@ block content
 		| 		if(stream.completed && live) window.location = '';
 		| 		live = true;
 		| 		//Keeping the stream in localstorage
-		| 		localStorage && localStorage.setItem(_id, stream.data);
+		| 		stream.data && localStorage && localStorage.setItem(_id, stream.data);
 		| 	};
 		| } else if(localStorage && localStorage.hasOwnProperty(_id)) {
 		| 		document.querySelector('#eventstream').textContent = localStorage.getItem(_id);
