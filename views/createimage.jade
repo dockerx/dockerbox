@@ -45,7 +45,7 @@ block content
 								label Build Failed
 								button.pure-button.pure-button-primary(onclick='submit(this)') Update & Rebuild
 								button.pure-button.pure-button-error(onclick='deleteImage(this)') Delete
-							button(onclick='toggleProcessing()') Show Console Output
+						button(onclick='toggleProcessing()') Show Console Output
 
 		.pure-u-1-2.marginline
 			include codemirror
@@ -62,20 +62,27 @@ block content
 		|		} else alert(JSON.stringify(res));
 		|	});
 		| }
-		|	if(streamId) {
-		|		var source = new EventSource("/events/" + streamId);
-		|		var live = false;
-		|		source.onmessage = function(e) {
-		|			var stream = JSON.parse(e.data);
-		|			if(stream.redirect && (build_status === 'processing')) window.location = stream.redirect.location;
-		|			var check = ((processingNode.clientHeight + processingNode.scrollTop) == processingNode.scrollHeight);
-		|			document.querySelector('#eventstream').textContent = stream.data;
-		|			if(check) processingNode.scrollTop = processingNode.scrollHeight;
-		|			if(stream.completed) e.target.close();
-		|			if(stream.completed && live) window.location = '';
-		|			live = true;
-		|		};
-		|	}
+		| 
+		| //The log streaming
+		| if(streamId) {
+		| 	var source = new EventSource("/events/" + streamId);
+		| 	var live = false;
+		| 	source.onmessage = function(e) {
+		| 		var stream = JSON.parse(e.data);
+		| 		if(stream.redirect && (build_status === 'processing')) window.location = stream.redirect.location;
+		| 		var check = ((processingNode.clientHeight + processingNode.scrollTop) == processingNode.scrollHeight);
+		| 		document.querySelector('#eventstream').textContent = stream.data;
+		| 		if(check) processingNode.scrollTop = processingNode.scrollHeight;
+		| 		if(stream.completed) e.target.close();
+		| 		if(stream.completed && live) window.location = '';
+		| 		live = true;
+		| 		//Keeping the stream in localstorage
+		| 		localStorage && localStorage.setItem(_id, stream.data);
+		| 	};
+		| } else if(localStorage && localStorage.hasOwnProperty(_id)) {
+		| 		document.querySelector('#eventstream').textContent = localStorage.getItem(_id);
+		| }
+		| 
 		| function submit() {
 		|	if(!validate()) return;
 		|	var data = {
