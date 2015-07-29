@@ -416,6 +416,10 @@ label {
 	text-align: center;
 	border-bottom: 1px solid rgb(191, 191, 191);
 	padding-bottom: 10px;
+	position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
 }
 #template_build input,
 #template_build textarea,
