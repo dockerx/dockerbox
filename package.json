@@ -1,7 +1,6 @@
 {
-  "name": "QA-Orchestrator",
+  "name": "dockerbox",
   "version": "0.0.1",
-  "private": true,
   "scripts": {
     "start": "node ./bin/www"
   },
