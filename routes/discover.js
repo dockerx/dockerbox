@@ -44,7 +44,7 @@ router.post('/discover/server/delete/:servername', function(req, res) {
 			return;
 		}
 
-		common.proxyRules('removeHttpProxy', body.name, body.app);
+		common.proxyRules('remove', body.name, body.app);
 		docker.compose.stop(req.params.servername);
 		db.delete('qa', function(err) {
 			if (err) {

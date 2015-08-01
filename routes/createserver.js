@@ -73,7 +73,7 @@ router.post('/createserver', function(req, res) {
 					compose_status : exitCode,
 					app : app
 				};
-				if(exitCode === 0) common.proxyRules('addHttpProxy', name, app, restartHap);
+				if(exitCode === 0) common.proxyRules('add', name, app, restartHap);
 				common.completeAction('qa', stream, exitCode, updateData, name);
 			});
 			res.json({

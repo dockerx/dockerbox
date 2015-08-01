@@ -13,7 +13,10 @@ var secrets = require('./secrets.json');
 
 http.globalAgent.maxSockets = Infinity;
 
-require("dynamichaproxy").init();
+require('elb').start(secrets.elbPort || 80, {
+    defaultTarget : "localhost:3000",
+    errorMessage : "errorMessage"
+});
 
 db.read('qa', function(err, body){
     if(err) {
@@ -22,7 +25,7 @@ db.read('qa', function(err, body){
     }
     body.rows.forEach(function(row){
         addUsedPorts(row.value.app);
-        common.proxyRules('addHttpProxy', row.value.name, row.value.app);
+        common.proxyRules('add', row.value.name, row.value.app);
     });
     function addUsedPorts(app) {
         portmanager.getPort(app.http_forward_port);
