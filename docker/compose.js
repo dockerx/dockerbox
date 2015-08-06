@@ -84,6 +84,7 @@ function CreateYml(app) {
 		'  ports:\n' +
 		'   - \"' + (app.port || 80) + '\"\n' +
 		'   - \"57575\"\n' +
+		'   - \"22\"\n' +
 		//'   - \"' + app.http_forward_port + ':' + (app.port || 80) + '\"\n' +
 		//'   - \"' + app.terminal_forward_port + ':57575\"\n' +
 		( app.dependency.length ? '  links:\n' : '');
