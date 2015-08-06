@@ -44,6 +44,10 @@ textarea,
 	border-radius: 0;
 }
 
+.pure-g p {
+    letter-spacing: normal;
+}
+
 textarea {
 	display: block;
 }

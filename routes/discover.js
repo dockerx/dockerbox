@@ -49,7 +49,7 @@ router.get('/discover/server/:servername', function(req, res, next) {
 
 		function getIpPort(fh) {
 			var s = fh.split(':');
-			return 'ssh root@' + s[0] + ' -p ' + s[1];
+			return 'ssh root@' + (secrets.ipmap[s[0]] || secrets.swarm_host) + ' -p ' + s[1];
 		};
 
 		return ser;
