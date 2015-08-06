@@ -13,7 +13,7 @@ router.get('/discover/server/:servername', function(req, res, next) {
 	db.read('qa', function(err, body) {
 		if(err) return next();
 		body.serverList = getServerList(body.app);
-		body.sshIpMap = getSshIpPort(body.app);
+		body.sshIpMap = (body.compose_status === 0) ? getSshIpPort(body.app) : {};
 		body.domainName = secrets.mainhost;
 		body.common = common.renderData(req);
 		res.render('discoverserver', body);
