@@ -108,6 +108,7 @@ function getTargetHosts(qaname, app, done) {
 	function assignHosts(app) {
 		funStack.push(function(cb){getHttpHost('http_forward_host', app, app.port || 80, cb)});
 		funStack.push(function(cb){getHttpHost('terminal_forward_host', app, 57575, cb)});
+		funStack.push(function(cb){getHttpHost('ssh_forward_host', app, 22, cb)});
 		app.dependency = app.dependency || [];
 		app.dependency.forEach(function(d){
 			assignHosts(d);

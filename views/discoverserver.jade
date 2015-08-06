@@ -35,6 +35,8 @@ block content
 								each server in serverList
 									option=server
 							a#sshlink.pure-button.pure-button-primary(href='http://terminal-'+name+serverList[0] + '.' + domainName target='_blank') SSH
+						.pure-g
+							p#sshport=sshIpMap[serverList[0]]
 					.pure-control-group
 						button.pure-button.pure-button-error(onclick='deleteQA(this)') Delete
 					if publish
@@ -54,7 +56,7 @@ block content
 		.pure-u-1-2.marginline
 			include uml
 
-	script!='var dockerbox = ' + JSON.stringify({servername:name, compose_status:compose_status, _rev:_rev, streamId:(streamId || ''), domainName:domainName})
+	script!='var dockerbox = ' + JSON.stringify({sshIpMap:sshIpMap, servername:name, compose_status:compose_status, _rev:_rev, streamId:(streamId || ''), domainName:domainName})
 	script
 		| var processingNode = document.querySelector('#processing');
 		| if(dockerbox.streamId) {
@@ -111,6 +113,7 @@ block content
 		| }
 		| function sshChange(select){
 		|	document.querySelector('#sshlink').href = 'http://terminal-' + dockerbox.servername + select.value + '.' + dockerbox.domainName;
+		|	document.querySelector('#sshport').textContent = dockerbox.sshIpMap[select.value];
 		| }
 		| window.onload = function(){
 		|	renderUml();

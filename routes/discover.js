@@ -13,6 +13,7 @@ router.get('/discover/server/:servername', function(req, res, next) {
 	db.read('qa', function(err, body) {
 		if(err) return next();
 		body.serverList = getServerList(body.app);
+		body.sshIpMap = getSshIpPort(body.app);
 		body.domainName = secrets.mainhost;
 		body.common = common.renderData(req);
 		res.render('discoverserver', body);
@@ -30,6 +31,27 @@ router.get('/discover/server/:servername', function(req, res, next) {
 				doSome(dep);
 			});
 		};
+		return ser;
+	}
+
+	function getSshIpPort(app) {
+		var ser = {};
+		ser[app.image] = getIpPort(app.ssh_forward_host);
+		doSome(app);
+
+		function doSome(app) {
+			if (!app.image) return;
+			app.dependency && app.dependency.forEach(function(dep) {
+				if (dep.image) ser[dep.image] = getIpPort(dep.ssh_forward_host);
+				doSome(dep);
+			});
+		};
+
+		function getIpPort(fh) {
+			var s = fh.split(':');
+			return 'ssh root@' + s[0] + ' -p ' + s[1];
+		};
+
 		return ser;
 	}
 });
