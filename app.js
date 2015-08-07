@@ -15,7 +15,7 @@ http.globalAgent.maxSockets = Infinity;
 
 require('elb').start(secrets.elbPort || 80, {
     defaultTarget : "localhost:3000",
-    errorMessage : "errorMessage"
+    errorMessage : "Seems like there is no application running in your server."
 });
 
 db.read('qa', function(err, body){
