@@ -1,21 +1,36 @@
 var elb = require("elb");
+var dynamichaproxy = require("dynamichaproxy");
 var db = require("./db");
 var secrets = require('../secrets.json');
+
+dynamichaproxy.add = dynamichaproxy.addHttpProxy;
+dynamichaproxy.remove = dynamichaproxy.removeHttpProxy;
 
 module.exports = {
 
 	proxyRules : function(action, qaname, app, restart) {
-		elb[action](qaname + '.' + secrets.mainhost, app.http_forward_host || 'localhost:' + app.http_forward_port); //Main Web
+		
+		if(secrets.useElb) elb[action](qaname + '.' + secrets.mainhost, app.http_forward_host || 'localhost:' + app.http_forward_port); //Main Web
+		else dynamichaproxy[action](qaname, app.http_forward_host || app.http_forward_port); //Main Web
+		
 		terminalRules(qaname, app);
 
 		function terminalRules(qaname, app, httpAlso) {
-			elb[action]('terminal-' + qaname + app.name + '.' + secrets.mainhost, app.terminal_forward_host || 'localhost:' + app.terminal_forward_port);
-			httpAlso && elb[action](qaname + app.name + '.' + secrets.mainhost, app.http_forward_host || 'localhost:' + app.http_forward_port);
+			if(secrets.useElb) {
+				elb[action]('terminal-' + qaname + app.name + '.' + secrets.mainhost, app.terminal_forward_host || 'localhost:' + app.terminal_forward_port);
+				httpAlso && elb[action](qaname + app.name + '.' + secrets.mainhost, app.http_forward_host || 'localhost:' + app.http_forward_port);
+			} else {
+				dynamichaproxy[action]('terminal-' + qaname + app.name, app.terminal_forward_host || app.terminal_forward_port);
+				httpAlso && dynamichaproxy[action](qaname + app.name, app.http_forward_host || app.http_forward_port);
+			}
 			app.dependency = app.dependency || [];
 			app.dependency.forEach(function(d){
 				terminalRules(qaname, d, true);
 			});
 		}
+
+		//restart is not a good experience, so will fo only when explisitly mentioned
+		!secrets.useElb && restart && dynamichaproxy.restart();
 	},
 
 	completeAction : function(dbName, stream, exitCode, updateData, name) {

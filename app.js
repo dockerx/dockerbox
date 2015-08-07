@@ -13,10 +13,14 @@ var secrets = require('./secrets.json');
 
 http.globalAgent.maxSockets = Infinity;
 
-require('elb').start(secrets.elbPort || 80, {
-    defaultTarget : "localhost:3000",
-    errorMessage : "Seems like there is no application running in your server."
-});
+if(secrets.useElb) {
+    require('elb').start(secrets.elbPort || 80, {
+        defaultTarget : "localhost:3000",
+        errorMessage : "Seems like there is no application running in your server."
+    });
+} else {
+    require("dynamichaproxy").init();
+}
 
 db.read('qa', function(err, body){
     if(err) {
