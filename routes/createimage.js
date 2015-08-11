@@ -4,6 +4,7 @@ var express = require('express');
 var router = express.Router();
 var db = require('../services/db');
 var common = require('../services/common');
+var hacks = require('../services/hacks');
 var streamStore = require('../services/stream');
 var docker = require('../docker');
 var async = require('async');
@@ -47,7 +48,7 @@ router.post('/createimage', function(req, res) {
 	});
 	
 	function deleteDockerImage(cb) {
-		docker.image.remove(name, cb);
+		hacks.removeImage(name, cb);
 	}
 
 	function createImage(cb) {

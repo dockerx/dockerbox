@@ -69,10 +69,10 @@ module.exports = {
 		});
 	},
 	
-	remove : function(name, cb) {
+	remove : function(name, cb, imageHost) {
 		var self = this;
 		var command = 'docker';
-	    if(host) command += ' -H ' + registryHost; 
+	    if(host) command += ' -H ' + (imageHost || registryHost); 
 
 	    async.parallel([deleteLocalImage, deleteRegistryImage], function(err, result){
 	    	cb(err);

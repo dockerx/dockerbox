@@ -5,6 +5,7 @@ var router = express.Router();
 var db = require('../services/db');
 var validation = require('../services/validation');
 var common = require('../services/common');
+var hacks = require('../services/hacks');
 var docker = require('../docker');
 var secrets = require('../secrets.json');
 var async = require('async');
@@ -152,7 +153,7 @@ router.post('/discover/image/delete/:imagename', function(req, res) {
 		});
 
 		function deleteDockerImage(cb) {
-			docker.image.remove(req.params.imagename, cb);
+			hacks.removeImage(req.params.imagename, cb);
 		}
 
 		function deleteFromDb(cb) {
