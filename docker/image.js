@@ -108,13 +108,13 @@ module.exports = {
 	    function checkImageExist(name, cb) {
 	    	self.listImages(function(err, taglist){
 	    		cb(err, !(taglist.indexOf(name) === -1));
-	    	});
+	    	}, imageHost);
 	    }
 	},
 
-	listImages : function(cb) {
+	listImages : function(cb, imageHost) {
 		var command = "docker";
-		if(host) command += ' -H ' + registryHost;
+		if(host) command += ' -H ' + (imageHost || registryHost);
 		command += " images | awk '{print $1}'";
 		exec(command, function(err, stdout, stderr){
 			if(err) return cb(err);
