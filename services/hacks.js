@@ -14,6 +14,6 @@ module.exports = {
 				dockerImage.remove(name, cb, imageHost);
 			});
 		});
-		async.parallel(tasks, cb);
+		async.series(tasks, cb);
 	}
 };
