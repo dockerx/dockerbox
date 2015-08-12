@@ -29,7 +29,7 @@ router.post('/createimage', function(req, res) {
 	req.body.params = common.getParams(req.body.dockerfile);
 
 	var name = req.body.name,
-	tasks = [createImage, buildImage];
+	tasks = [createImageinDB, buildImage];
 
 	if(!isNewImage(req)) tasks.splice(0, 0, deleteDockerImage); // Added the delete existing image as the 1st task
 
@@ -51,7 +51,7 @@ router.post('/createimage', function(req, res) {
 		hacks.removeImage(name, cb);
 	}
 
-	function createImage(cb) {
+	function createImageinDB(cb) {
 		db.create('image', name, req.body, function(err, body, header) {
 			cb(err);
 		});

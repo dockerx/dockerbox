@@ -138,7 +138,7 @@ router.post('/discover/image/delete/:imagename', function(req, res) {
 			return;
 		}
 
-		async.parallel([deleteDockerImage, deleteFromDb], function(err, results) {
+		async.series([deleteDockerImage, deleteFromDb], function(err, results) {
 			if (err) {
 				res.json({
 					status : 'error',
