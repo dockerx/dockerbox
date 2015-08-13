@@ -6,7 +6,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var session = require('express-session');
 var db = require('./services/db');
-var portmanager = require('./services/portmanager');
 var common = require('./services/common');
 var http = require('http');
 var secrets = require('./secrets.json');
@@ -28,17 +27,8 @@ db.read('qa', function(err, body){
         return;
     }
     body.rows.forEach(function(row){
-        addUsedPorts(row.value.app);
         common.proxyRules('add', row.value.name, row.value.app);
     });
-    function addUsedPorts(app) {
-        portmanager.getPort(app.http_forward_port);
-        portmanager.getPort(app.terminal_forward_port);
-        app.dependency = app.dependency || [];
-        app.dependency.forEach(function(d){
-            addUsedPorts(d);
-        });
-    }
 });
 
 var routes = require('./routes/index');

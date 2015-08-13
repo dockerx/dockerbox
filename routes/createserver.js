@@ -6,7 +6,6 @@ var db = require('../services/db');
 var common = require('../services/common');
 var docker = require('../docker');
 var streamStore = require('../services/stream');
-var portManager = require('../services/portmanager');
 var restartHap = true;
 var async = require('async');
 
@@ -46,7 +45,7 @@ router.post('/createserver', function(req, res) {
 	req.body.created_by = req.session.user;
 	req.body.created_on = Date();
 	req.body.streamId = stream.id;
-	assignPort(app);
+	req.body.images_used = usedImages(app);
 
 	//check if name already taken
 	hostNameAvailable(name, function(err, available){
@@ -103,13 +102,16 @@ function hostNameAvailable(name, cb) {
 	});
 }
 
-function assignPort(app) {
-	app.http_forward_port = portManager.getPort();
-	app.terminal_forward_port = portManager.getPort();
-	app.dependency = app.dependency || [];
-	app.dependency.forEach(function(d){
-		assignPort(d);
-	});
+function usedImages(app) {
+	var ui =[];
+	some(app);
+	function some(a) {
+		ui.push(a.image);
+		a.dependency.forEach(function(d){
+			some(d);
+		});
+	}
+	return ui;
 }
 
 module.exports = router;

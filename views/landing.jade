@@ -38,6 +38,8 @@ block content
 							- var buildStatus = doc.value.build_status;
 							.cell(class=(buildStatus == 'processing' ? 'disabled' : (buildStatus != 0 ? 'warning' : '')))
 								a.imagename(href='/discover/image/'+doc.value.name)=doc.value.name
+								- var cby = doc.value.created_by;cby.name = cby.name || ''; cby.email = cby.email || '';
+								.hidden.createdby=cby.name + ' ' + cby.email
 							if buildStatus == 'processing'
 								img.processing(src='/image/processing.gif')
 							#imagedatacell.cell.hidden=JSON.stringify(doc.value)
@@ -72,7 +74,10 @@ block content
 							.cell=(++count)
 							.cell
 								a.servername(href='/discover/server/'+doc.value.name)=doc.value.name
-							.cell=doc.value.app.name
+								- var cby = doc.value.created_by;cby.name = cby.name || ''; cby.email = cby.email || '';
+								.hidden.createdby=cby.name + ' ' + cby.email
+							- var imagesUsed = (doc.value.app.images_used || [doc.value.app.image]).join(',')
+							.cell=imagesUsed
 							#serverdatacell.cell.hidden=JSON.stringify(doc.value)
 				
 	script(src="/js/list.js")
@@ -138,8 +143,8 @@ block content
 		| 
 		| // Init of search
 		| (new List('images_wrapper', {
-		| 	valueNames: [ 'imagename' ]
+		| 	valueNames: [ 'imagename', 'createdby' ]
 		| }));
 		| (new List('servers_wrapper', {
-		| 	valueNames: [ 'servername' ]
+		| 	valueNames: [ 'servername', 'createdby' ]
 		| }));
