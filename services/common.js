@@ -1,10 +1,12 @@
 var elb = require("elb");
-var dynamichaproxy = require("dynamichaproxy");
 var db = require("./db");
 var secrets = require('../secrets.json');
 
-dynamichaproxy.add = dynamichaproxy.addHttpProxy;
-dynamichaproxy.remove = dynamichaproxy.removeHttpProxy;
+if(!secrets.useElb) {
+	var dynamichaproxy = require("dynamichaproxy");
+	dynamichaproxy.add = dynamichaproxy.addHttpProxy;
+	dynamichaproxy.remove = dynamichaproxy.removeHttpProxy;
+}
 
 module.exports = {
 
