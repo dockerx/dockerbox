@@ -25,7 +25,7 @@ block content
 					span#last_updated_on
 					br
 					br
-					a#clone(href='/clone/image/') Clone
+					a.hidden#clone(href='/clone/image/') Clone
 					br
 					div#clonenodes
 				
@@ -35,8 +35,11 @@ block content
 					each doc in images.rows
 						.row(onclick="imageDetail(event)")
 							.cell=(++count)
-							.cell
+							- var buildStatus = doc.value.build_status;
+							.cell(class=(buildStatus == 'processing' ? 'disabled' : (buildStatus != 0 ? 'warning' : '')))
 								a.imagename(href='/discover/image/'+doc.value.name)=doc.value.name
+							if buildStatus == 'processing'
+								img.processing(src='/image/processing.gif')
 							#imagedatacell.cell.hidden=JSON.stringify(doc.value)
 							#imageclonedatacell.cell.hidden
 								- var clonedocs = images.clonemap[doc.value.name] || [];

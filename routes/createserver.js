@@ -27,7 +27,7 @@ router.get('/createserver', function(req, res, next) {
 		imageMap = {};
 		
 		images.rows.map(function(i){return i.value;}).forEach(function(i){
-			imageMap[i.name] = i.port;
+			if(i.build_status === 0) imageMap[i.name] = i.port;
 		});
 		
 		res.render('createserver', {

@@ -336,6 +336,21 @@ label {
 	background-color: beige;
 }
 
+#landing_page .content .row .processing {
+	float: right;
+    position: relative;
+    top: 4px;
+    right: 5px;
+}
+
+#landing_page .content .row .cell.disabled a {
+	color : #C1C1C1
+}
+
+#landing_page .content .row .cell.warning a {
+	color : #FFA3A3
+}
+
 #landing_page .content .row .cell {
 	display: inline-block;
 	padding: 10px;
