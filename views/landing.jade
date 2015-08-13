@@ -77,7 +77,7 @@ block content
 								- var cby = doc.value.created_by;cby.name = cby.name || ''; cby.email = cby.email || '';
 								.hidden.createdby=cby.name + ' ' + cby.email
 							- var imagesUsed = (doc.value.app.images_used || [doc.value.app.image]).join(',')
-							.cell=imagesUsed
+							.cell.imagesused=imagesUsed
 							#serverdatacell.cell.hidden=JSON.stringify(doc.value)
 				
 	script(src="/js/list.js")
@@ -146,5 +146,5 @@ block content
 		| 	valueNames: [ 'imagename', 'createdby' ]
 		| }));
 		| (new List('servers_wrapper', {
-		| 	valueNames: [ 'servername', 'createdby' ]
+		| 	valueNames: [ 'servername', 'createdby', 'imagesused' ]
 		| }));
