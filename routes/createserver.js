@@ -107,7 +107,7 @@ function usedImages(app) {
 	some(app);
 	function some(a) {
 		ui.push(a.image);
-		a.dependency.forEach(function(d){
+		a.dependency && a.dependency.forEach(function(d){
 			some(d);
 		});
 	}
