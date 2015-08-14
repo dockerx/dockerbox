@@ -18,20 +18,25 @@ router.get('/createimage', function(req, res) {
 });
 
 router.post('/createimage', function(req, res) {
-	var stream = streamStore.create();
+	var stream = streamStore.create(),
+	tasks = [];
 	if(isNewImage(req)) {
 		req.body.created_by = req.session.user;
 		req.body.created_on = Date();
+		tasks.push(createImageinDB);
+	} else {
+		tasks.push(deleteDockerImage);
+		tasks.push(updateImageinDB);
 	}
+
+	tasks.push(buildImage);
+	
 	req.body.last_updated_by = req.session.user;
 	req.body.last_updated_on = Date();
 	req.body.streamId = stream.id;
 	req.body.params = common.getParams(req.body.dockerfile);
 
-	var name = req.body.name,
-	tasks = [createImageinDB, buildImage];
-
-	if(!isNewImage(req)) tasks.splice(0, 0, deleteDockerImage); // Added the delete existing image as the 1st task
+	var name = req.body.name;
 
 	async.series(tasks, function(err, result){
 		if (err) {
@@ -53,6 +58,12 @@ router.post('/createimage', function(req, res) {
 
 	function createImageinDB(cb) {
 		db.create('image', name, req.body, function(err, body, header) {
+			cb(err);
+		});
+	}
+
+	function updateImageinDB(cb) {
+		db.update('image', name, req.body, function(err, body, header) {
 			cb(err);
 		});
 	}
