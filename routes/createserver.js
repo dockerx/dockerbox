@@ -13,7 +13,7 @@ var async = require('async');
 var reserverdNames = ['www'];
 //Messages
 var messages = {
-	nameTaken : 'This name already taken. Please try a different name.'
+	nameTaken : 'This name is already taken. Please try a different name.'
 };
 
 /* GET home page. */
