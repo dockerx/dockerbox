@@ -116,6 +116,7 @@ block content
 		|	};
 		|	if(!data.app.image) {alert('Atleast one image in mandatory to create a server'); return;}
 		| 	if(invalidImage(data.app)) return;
+		| 	if(sameImageHack(data.app)) return;
 		|	document.querySelector('#processing').classList.remove('hidden');
 		|	$.post('', data, function(res){
 		|		if(res.redirect) {
@@ -165,4 +166,14 @@ block content
 		| 		return invalidImage(d);
 		| 	});
 		| 	function has(i) {return (imageList.indexOf(i) > -1);}
+		| }
+		| function sameImageHack(a, map) {
+		| 	var app = a || getApp(),
+		|	imagesMap = map || {},
+		|	invalid = !!imagesMap[app.image];
+		|	invalid && alert('Because of an issue in the system we cannot use an image more than once. Here the image : ' + app.image + ' is used more than once. Please use a different image for now. We are working on a fix for this issue');
+		| 	imagesMap[app.image] = true;
+		| 	return invalid || app.dependency.some(function(d){
+		| 		return sameImageHack(d, imagesMap);
+		| 	});
 		| }
