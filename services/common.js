@@ -1,11 +1,11 @@
 var elb = require("elb");
+var haproxy = require("haproxy");
 var db = require("./db");
 var secrets = require('../secrets.json');
 
 if(!secrets.useElb) {
-	var dynamichaproxy = require("dynamichaproxy");
-	dynamichaproxy.add = dynamichaproxy.addHttpProxy;
-	dynamichaproxy.remove = dynamichaproxy.removeHttpProxy;
+	haproxy.add = haproxy.addHttpProxy;
+	haproxy.remove = haproxy.removeHttpProxy;
 }
 
 module.exports = {
@@ -13,7 +13,7 @@ module.exports = {
 	proxyRules : function(action, qaname, app, restart) {
 		
 		if(secrets.useElb) elb[action](qaname + '.' + secrets.mainhost, app.http_forward_host || 'localhost:' + app.http_forward_port); //Main Web
-		else dynamichaproxy[action](qaname, app.http_forward_host || app.http_forward_port); //Main Web
+		else haproxy[action](qaname, app.http_forward_host || app.http_forward_port); //Main Web
 		
 		terminalRules(qaname, app);
 
@@ -22,8 +22,8 @@ module.exports = {
 				elb[action]('terminal-' + qaname + app.name + '.' + secrets.mainhost, app.terminal_forward_host || 'localhost:' + app.terminal_forward_port);
 				httpAlso && elb[action](qaname + app.name + '.' + secrets.mainhost, app.http_forward_host || 'localhost:' + app.http_forward_port);
 			} else {
-				dynamichaproxy[action]('terminal-' + qaname + app.name, app.terminal_forward_host || app.terminal_forward_port);
-				httpAlso && dynamichaproxy[action](qaname + app.name, app.http_forward_host || app.http_forward_port);
+				haproxy[action]('terminal-' + qaname + app.name, app.terminal_forward_host || app.terminal_forward_port);
+				httpAlso && haproxy[action](qaname + app.name, app.http_forward_host || app.http_forward_port);
 			}
 			app.dependency = app.dependency || [];
 			app.dependency.forEach(function(d){
@@ -32,7 +32,7 @@ module.exports = {
 		}
 
 		//restart is not a good experience, so will fo only when explisitly mentioned
-		!secrets.useElb && restart && dynamichaproxy.restart();
+		!secrets.useElb && restart && haproxy.restart();
 	},
 
 	completeAction : function(dbName, stream, exitCode, updateData, name) {

@@ -9,7 +9,7 @@ var express = require('express'),
     common = require('./services/common'),
     http = require('http'),
     secrets = require('./secrets.json'),
-    dynamichaproxy = require("dynamichaproxy");
+    haproxy = require("haproxy");
 
 app.set('port', process.env.PORT || 3000);
 http.globalAgent.maxSockets = Infinity;
@@ -20,7 +20,7 @@ if(secrets.useElb) {
         errorMessage : 'Seems like there is no application running in your server.'
     });
 } else {
-    dynamichaproxy.init({
+    haproxy.init({
         defaultBackend : 'localhost:' + app.get('port'),
         hapAdminPort : 9100
     });
@@ -34,7 +34,7 @@ db.read('qa', function(err, body){
     body.rows.forEach(function(row){
         common.proxyRules('add', row.value.name, row.value.app);
     });
-    dynamichaproxy.restart();
+    haproxy.restart();
 });
 
 var routes = require('./routes/index');
