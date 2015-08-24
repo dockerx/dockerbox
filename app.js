@@ -1,24 +1,29 @@
-var express = require('express');
-var path = require('path');
-var favicon = require('static-favicon');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var session = require('express-session');
-var db = require('./services/db');
-var common = require('./services/common');
-var http = require('http');
-var secrets = require('./secrets.json');
+var express = require('express'),
+    path = require('path'),
+    favicon = require('static-favicon'),
+    logger = require('morgan'),
+    cookieParser = require('cookie-parser'),
+    bodyParser = require('body-parser'),
+    session = require('express-session'),
+    db = require('./services/db'),
+    common = require('./services/common'),
+    http = require('http'),
+    secrets = require('./secrets.json'),
+    dynamichaproxy = require("dynamichaproxy");
 
+app.set('port', process.env.PORT || 3000);
 http.globalAgent.maxSockets = Infinity;
 
 if(secrets.useElb) {
     require('elb').start(secrets.elbPort || 80, {
-        defaultTarget : "localhost:3000",
-        errorMessage : "Seems like there is no application running in your server."
+        defaultTarget : 'localhost:' + app.get('port'),
+        errorMessage : 'Seems like there is no application running in your server.'
     });
 } else {
-    require("dynamichaproxy").init();
+    dynamichaproxy.init({
+        defaultBackend : 'localhost:' + app.get('port'),
+        hapAdminPort : 9100
+    });
 }
 
 db.read('qa', function(err, body){
@@ -29,6 +34,7 @@ db.read('qa', function(err, body){
     body.rows.forEach(function(row){
         common.proxyRules('add', row.value.name, row.value.app);
     });
+    dynamichaproxy.restart();
 });
 
 var routes = require('./routes/index');
