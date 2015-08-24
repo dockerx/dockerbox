@@ -11,6 +11,9 @@ var express = require('express'),
     secrets = require('./secrets.json'),
     haproxy = require("nodejs-haproxy");
 
+var app = express(),
+    routes = require('./routes/index');
+
 app.set('port', process.env.PORT || 3000);
 http.globalAgent.maxSockets = Infinity;
 
@@ -36,10 +39,6 @@ db.read('qa', function(err, body){
     });
     haproxy.restart();
 });
-
-var routes = require('./routes/index');
-
-var app = express();
 
 //Redirect all non-www to www except subdomains
 app.get('/*', function (req, res, next) {
