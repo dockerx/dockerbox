@@ -9,7 +9,7 @@ var express = require('express'),
     common = require('./services/common'),
     http = require('http'),
     secrets = require('./secrets.json'),
-    haproxy = require("haproxy");
+    haproxy = require("nodejs-haproxy");
 
 app.set('port', process.env.PORT || 3000);
 http.globalAgent.maxSockets = Infinity;

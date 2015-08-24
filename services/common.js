@@ -1,5 +1,5 @@
 var elb = require("elb");
-var haproxy = require("haproxy");
+var haproxy = require("nodejs-haproxy");
 var db = require("./db");
 var secrets = require('../secrets.json');
 
