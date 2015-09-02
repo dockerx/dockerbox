@@ -2,6 +2,7 @@
 
 module.exports = function (app) {
 	app.use('/', require('./gauth'));
+	app.use('/', require('./maintenance'));
 	app.use('/', require('./landing'));
 	app.use('/', require('./discover'));
 	app.use('/', require('./createserver'));
