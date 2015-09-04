@@ -3,10 +3,10 @@ var exec = require('child_process').exec,
 	fs = require('fs'),
 	tempFolder = __dirname + '/tempfiles/composefolders/',
 	async = require('async'),
-	secrets = require(__dirname + '/../secrets.json'),
-	registry = secrets.registry,
+	secrets = require('../services/configuration'),
+	registry = secrets.config.registry,
 	registry = registry ? registry+'/' : '',
-	host = secrets.swarm_host;
+	host = secrets.config.swarm_host;
 
 	process.env.DOCKER_HOST = host;
 

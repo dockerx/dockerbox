@@ -2,14 +2,14 @@
 
 var express = require('express');
 var router = express.Router();
-var secrets = require(__dirname + '/../secrets.json');
+var secrets = require('../services/configuration');
 var gapi = require('googleapis');
 
 var oauth2Client =
   new gapi.auth.OAuth2(
-    secrets.web.client_id,
-    secrets.web.client_secret,
-    secrets.web.redirect_uris[0]);
+    secrets.config.web.client_id,
+    secrets.config.web.client_secret,
+    secrets.config.web.redirect_uris[0]);
 
 router.post('/login', function(req, res) {
   var options = {

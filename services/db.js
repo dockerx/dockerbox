@@ -1,5 +1,5 @@
-var secrets = require('../secrets.json');
-var nano = require('nano')(secrets.db);
+var secrets = require('./configuration');
+var nano = require('nano')(secrets.config.db);
 var _ = require('underscore');
 var db = {
 	qa: nano.db.use('orchestrator-qa'),

@@ -1,10 +1,10 @@
 
 
-var secrets = require('../secrets.json');
+var secrets = require('./configuration');
 var dockerImage = require('../docker/image.js');
 var async = require('async');
 
-var imageHosts = Object.keys(secrets.ipmap).map(function(ip){return 'tcp://' + ip + ':2375';});
+var imageHosts = Object.keys(secrets.config.ipmap).map(function(ip){return 'tcp://' + ip + ':2375';});
 
 module.exports = {
 	removeImage : function(name, cb) {

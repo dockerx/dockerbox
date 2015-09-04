@@ -3,11 +3,11 @@ var exec = require('child_process').exec,
 	spawn = require('child_process').spawn,
 	fs = require('fs'),
 	tempFolder = __dirname + '/tempfiles/dockerfiles/',
-	secrets = require(__dirname + '/../secrets.json'),
-	registry = secrets.registry,
+	secrets = require('../services/configuration'),
+	registry = secrets.config.registry,
 	registry = registry ? registry+'/' : '',
-	host = secrets.swarm_host,
-	registryHost = secrets.registry_host || host || '$DOCKER_HOST',
+	host = secrets.config.swarm_host,
+	registryHost = secrets.config.registry_host || host || '$DOCKER_HOST',
 	async = require('async');
 
 module.exports = {

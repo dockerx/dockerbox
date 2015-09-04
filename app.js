@@ -8,8 +8,8 @@ var express = require('express'),
     db = require('./services/db'),
     common = require('./services/common'),
     http = require('http'),
-    secrets = require('./secrets.json'),
-    haproxy = secrets.useElb ? {} : require("nodejs-haproxy");
+    secrets = require('./services/configuration'),
+    haproxy = secrets.config.useElb ? {} : require("nodejs-haproxy");
 
 var app = express(),
     routes = require('./routes/index');
@@ -17,8 +17,8 @@ var app = express(),
 app.set('port', process.env.PORT || 3000);
 http.globalAgent.maxSockets = Infinity;
 
-if(secrets.useElb) {
-    require('elb').start(secrets.elbPort || 80, {
+if(secrets.config.useElb) {
+    require('elb').start(secrets.config.elbPort || 80, {
         defaultTarget : 'localhost:' + app.get('port'),
         errorMessage : 'Seems like there is no application running in your server.'
     });
@@ -37,13 +37,13 @@ db.read('qa', function(err, body){
     body.rows.forEach(function(row){
         common.proxyRules('add', row.value.name, row.value.app);
     });
-    !secrets.useElb && haproxy.restart();
+    !secrets.config.useElb && haproxy.restart();
 });
 
 //Redirect all non-www to www except subdomains
 app.get('/*', function (req, res, next) {
-  if (secrets.web.domain && !req.headers.host.match(new RegExp('^' + secrets.web.domain))) {
-    res.redirect((secrets.http || 'http') + '://' + secrets.web.domain + req.url);
+  if (secrets.config.web.domain && !req.headers.host.match(new RegExp('^' + secrets.config.web.domain))) {
+    res.redirect((secrets.config.http || 'http') + '://' + secrets.config.web.domain + req.url);
   } else {
     next();     
   }

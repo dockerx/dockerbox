@@ -1,9 +1,9 @@
 var elb = require("elb"),
-	secrets = require('../secrets.json'),
-	haproxy = secrets.useElb ? {} : require("nodejs-haproxy"),
+	secrets = require('./configuration'),
+	haproxy = secrets.config.useElb ? {} : require("nodejs-haproxy"),
 	db = require("./db");
 
-if(!secrets.useElb) {
+if(!secrets.config.useElb) {
 	haproxy.add = haproxy.addHttpProxy;
 	haproxy.remove = haproxy.removeHttpProxy;
 }
@@ -12,15 +12,15 @@ module.exports = {
 
 	proxyRules : function(action, qaname, app, restart) {
 		
-		if(secrets.useElb) elb[action](qaname + '.' + secrets.mainhost, app.http_forward_host || 'localhost:' + app.http_forward_port); //Main Web
+		if(secrets.config.useElb) elb[action](qaname + '.' + secrets.config.mainhost, app.http_forward_host || 'localhost:' + app.http_forward_port); //Main Web
 		else haproxy[action](qaname, app.http_forward_host || app.http_forward_port); //Main Web
 		
 		terminalRules(qaname, app);
 
 		function terminalRules(qaname, app, httpAlso) {
-			if(secrets.useElb) {
-				elb[action]('terminal-' + qaname + app.name + '.' + secrets.mainhost, app.terminal_forward_host || 'localhost:' + app.terminal_forward_port);
-				httpAlso && elb[action](qaname + app.name + '.' + secrets.mainhost, app.http_forward_host || 'localhost:' + app.http_forward_port);
+			if(secrets.config.useElb) {
+				elb[action]('terminal-' + qaname + app.name + '.' + secrets.config.mainhost, app.terminal_forward_host || 'localhost:' + app.terminal_forward_port);
+				httpAlso && elb[action](qaname + app.name + '.' + secrets.config.mainhost, app.http_forward_host || 'localhost:' + app.http_forward_port);
 			} else {
 				haproxy[action]('terminal-' + qaname + app.name, app.terminal_forward_host || app.terminal_forward_port);
 				httpAlso && haproxy[action](qaname + app.name, app.http_forward_host || app.http_forward_port);
@@ -32,7 +32,7 @@ module.exports = {
 		}
 
 		//restart is not a good experience, so will fo only when explisitly mentioned
-		!secrets.useElb && restart && haproxy.restart();
+		!secrets.config.useElb && restart && haproxy.restart();
 	},
 
 	completeAction : function(dbName, stream, exitCode, updateData, name) {
@@ -70,7 +70,7 @@ module.exports = {
 	renderData : function(req) {
 		return {
 			user : req.session.user,
-			gaTrackingId : secrets.gaTrackingId
+			gaTrackingId : secrets.config.gaTrackingId
 		};
 	},
 
@@ -87,7 +87,7 @@ module.exports = {
 	},
 
 	isAdmin : function(email) {
-		return secrets.admin.indexOf(email) > -1;
+		return secrets.config.admin.indexOf(email) > -1;
 	},
 
 	unlessMW : function(path, middleware) {
@@ -95,9 +95,7 @@ module.exports = {
 	        if(req.url.match(path)) next();
 	        else middleware.apply(this, arguments);
 	    };
-	},
-
-	config : secrets
+	}
 };
 
 

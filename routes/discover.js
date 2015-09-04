@@ -7,7 +7,7 @@ var validation = require('../services/validation');
 var common = require('../services/common');
 var hacks = require('../services/hacks');
 var docker = require('../docker');
-var secrets = require('../secrets.json');
+var secrets = require('../services/configuration');
 var async = require('async');
 
 router.get('/discover/server/:servername', function(req, res, next) {
@@ -15,7 +15,7 @@ router.get('/discover/server/:servername', function(req, res, next) {
 		if(err) return next();
 		body.serverList = getServerList(body.app);
 		body.sshIpMap = (body.compose_status === 0) ? getSshIpPort(body.app) : {};
-		body.domainName = secrets.mainhost;
+		body.domainName = secrets.config.mainhost;
 		body.common = common.renderData(req);
 		res.render('discoverserver', body);
 	}, req.params.servername);
@@ -51,7 +51,7 @@ router.get('/discover/server/:servername', function(req, res, next) {
 		function getIpPort(fh) {
 			if(!fh) return '';
 			var s = fh.split(':');
-			return 'ssh root@' + (secrets.ipmap[s[0]] || secrets.swarm_host) + ' -p ' + s[1];
+			return 'ssh root@' + (secrets.config.ipmap[s[0]] || secrets.config.swarm_host) + ' -p ' + s[1];
 		};
 
 		return ser;
