@@ -1,7 +1,7 @@
-var elb = require("elb");
-var haproxy = require("nodejs-haproxy");
-var db = require("./db");
-var secrets = require('../secrets.json');
+var elb = require("elb"),
+	secrets = require('../secrets.json'),
+	haproxy = secrets.useElb ? {} : require("nodejs-haproxy"),
+	db = require("./db");
 
 if(!secrets.useElb) {
 	haproxy.add = haproxy.addHttpProxy;
@@ -95,7 +95,9 @@ module.exports = {
 	        if(req.url.match(path)) next();
 	        else middleware.apply(this, arguments);
 	    };
-	}
+	},
+
+	config : secrets
 };
 
 

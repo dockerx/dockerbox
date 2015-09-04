@@ -1,4 +1,3 @@
-var secrets = require('../secrets.json');
 var common = require('./common.js');
 
 module.exports = {

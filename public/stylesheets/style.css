@@ -380,7 +380,7 @@ label {
 
 
 /*---------------------------------Create Server PAGE-----------------------------End*/
-/*---------------------------------Error PAGE-----------------------------Start*/
+/*---------------------------------Not Found PAGE-----------------------------Start*/
 #errorpage {
 	top: 75px;
 	position: absolute;
@@ -399,7 +399,25 @@ label {
 	text-align: center;
 	text-shadow: 0px 0px 500px #4F4A4A;
 }
-/*---------------------------------Error PAGE-----------------------------End*/
+/*---------------------------------Not Found PAGE-----------------------------End*/
+/*---------------------------------Configuration PAGE-----------------------------Start*/
+
+#configurationpage form {
+	text-align: center;
+}
+
+#configurationpage textarea {
+	width: 800px;
+    height: 600px;
+    background: rgb(0, 0, 0);
+    border: 1px #ddd solid;
+    color: #969631;
+    font-size: 18px;
+    padding: 40px 20px 20px 100px;
+    margin: 0 auto;
+}
+
+/*---------------------------------Configuration PAGE-----------------------------End*/
 
 /*---------------------------------Create Server PAGE-----------------------------Start*/
 #create_new_wrapper .aname input[type=text] {

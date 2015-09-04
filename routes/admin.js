@@ -2,6 +2,7 @@
 var express = require('express'),
 	router = express.Router(),
 	request = require('request'),
+	secrets = require('../secrets.json'),
 	common = require('../services/common.js'),
 	path = require('path'),
 	fs = require('fs');
@@ -10,7 +11,7 @@ router.get('/admin/configuration', function(req, res, next){
 	if(notAdmin(req)) return next();
 	res.render('configuration', {
 		common : common.renderData(req),
-		config : common.config
+		config : secrets
 	});
 });
 
@@ -26,7 +27,7 @@ router.post('/admin/configuration', function(req, res, next){
 			});
 	}
 	fs.writeFileSync(path.join(__dirname, '../secrets.json'), req.body.config);
-	common.config = config;
+	secrets = config;
 	res.redirect('/admin/configuration');
 });
 

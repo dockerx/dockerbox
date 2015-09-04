@@ -9,6 +9,6 @@ module.exports = function (app) {
 	app.use('/', require('./createimage'));
 	app.use('/', require('./cloneimage'));
 	app.use('/', require('./eventstream'));
-	app.use('/', require('./database'));
+	app.use('/', require('./admin'));
 	app.use('/', require('./notfound'));
 };
