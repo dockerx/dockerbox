@@ -4,14 +4,11 @@ var exec = require('child_process').exec,
 	fs = require('fs'),
 	tempFolder = __dirname + '/tempfiles/dockerfiles/',
 	secrets = require('../services/configuration'),
-	registry = secrets.config.registry,
-	registry = registry ? registry+'/' : '',
-	host = secrets.config.swarm_host,
-	registryHost = secrets.config.registry_host || host || '$DOCKER_HOST',
 	async = require('async');
 
 module.exports = {
 	create : function(name, dockerfileString, stream, cb) {
+		var registryHost = secrets.config.registry_host || secrets.config.swarm_host || '$DOCKER_HOST';
 		var that = this;
 		//create a folder for the dockerfile
 		exec('mkdir -p '+ tempFolder + name, function(err, stdout, stderr) {
@@ -39,6 +36,11 @@ module.exports = {
 	},
 
 	push : function(name, stream, cb) { // push to registry
+		var registryHost = secrets.config.registry_host || secrets.config.swarm_host || '$DOCKER_HOST';
+		var registry = secrets.config.registry;
+		var host = secrets.config.swarm_host;
+		registry = registry ? registry+'/' : '';
+
 		if(!registry) {
 			stream.data += '\nPush to registry cancelled since no registry configured.'
 			return cb(0);
@@ -70,6 +72,8 @@ module.exports = {
 	},
 	
 	remove : function(name, cb, imageHost) {
+		var registryHost = secrets.config.registry_host || secrets.config.swarm_host || '$DOCKER_HOST';
+		var host = secrets.config.swarm_host;
 		var self = this;
 		var command = 'docker';
 	    if(host) command += ' -H ' + (imageHost || registryHost); 
@@ -83,6 +87,8 @@ module.exports = {
 	    }
 		
 		function deleteRegistryImage(cb) {
+	    	var registry = secrets.config.registry;
+			registry = registry ? registry+'/' : '';
 	    	checkNdelete(registry + name, cb);
 	    }
 
@@ -113,6 +119,8 @@ module.exports = {
 	},
 
 	listImages : function(cb, imageHost) {
+		var registryHost = secrets.config.registry_host || secrets.config.swarm_host || '$DOCKER_HOST';
+		var host = secrets.config.swarm_host;
 		var command = "docker";
 		if(host) command += ' -H ' + (imageHost || registryHost);
 		command += " images | awk '{print $1}'";

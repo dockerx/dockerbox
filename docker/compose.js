@@ -3,12 +3,9 @@ var exec = require('child_process').exec,
 	fs = require('fs'),
 	tempFolder = __dirname + '/tempfiles/composefolders/',
 	async = require('async'),
-	secrets = require('../services/configuration'),
-	registry = secrets.config.registry,
-	registry = registry ? registry+'/' : '',
-	host = secrets.config.swarm_host;
+	secrets = require('../services/configuration');
 
-	process.env.DOCKER_HOST = host;
+	
 
 module.exports = {
 	start: function(name, serverStructure, stream, cb) {
@@ -19,7 +16,8 @@ module.exports = {
 
 			var ymlString = CreateYml(serverStructure);
 		    fs.writeFileSync(tempFolder + name + '/docker-compose.yml', ymlString);
-			
+
+			process.env.DOCKER_HOST = secrets.config.swarm_host;
 			var compose = spawn('docker-compose', ['up', '-d'], {"cwd":tempFolder + name, "env" : process.env});
 
 			compose.stdout.on('data', function(data) { 
@@ -42,6 +40,7 @@ module.exports = {
 	},
 	stop: function(name) {
 		var command = 'COMPOSE_FILE=' + tempFolder + name + '/docker-compose.yml docker-compose stop';
+		var host = secrets.config.swarm_host;
 		if(host) command = 'DOCKER_HOST=' + host + ' ' + command;
 		exec(command, function(err, stdout, stderr) {
 			if(err) {
@@ -59,6 +58,7 @@ module.exports = {
 	},
 	remove: function(name) {
 		var command = 'COMPOSE_FILE=' + tempFolder + name + '/docker-compose.yml docker-compose rm --force';
+		var host = secrets.config.swarm_host;
 		if(host) command = 'DOCKER_HOST=' + host + ' ' + command;
 		exec(command, function(err, stdout, stderr) {
 			if(err) {
@@ -78,6 +78,9 @@ function CreateYml(app) {
 	return yml;
 
 	function appTemplate(app) {
+		var registry = secrets.config.registry;
+		registry = registry ? registry+'/' : '';
+
 		app.dependency = app.dependency || [];
 		var template = app.name + ':\n' +
 		'  image: ' + registry + app.image + '\n' +
@@ -98,6 +101,7 @@ function CreateYml(app) {
 
 function getTargetHosts(qaname, app, done) {
 	var command = 'COMPOSE_FILE=' + tempFolder + qaname + '/docker-compose.yml docker-compose port ';
+	var host = secrets.config.swarm_host;
 	if(host) command = 'DOCKER_HOST=' + host + ' ' + command;
 	var funStack = [];
 	assignHosts(app);
