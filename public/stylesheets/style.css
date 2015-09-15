@@ -283,7 +283,7 @@ label {
 #landing_page .content #images,
 #landing_page .content #servers {
 	max-height: 550px;
-	overflow: scroll;
+	overflow: auto;
 }
 
 #landing_page .content #images,
