@@ -1,3 +1,5 @@
+//Expecting the registry as dependency from docker-compose
+
 
 var exec = require('child_process').exec,
 	spawn = require('child_process').spawn,
@@ -37,7 +39,7 @@ module.exports = {
 
 	push : function(name, stream, cb) { // push to registry
 		var registryHost = secrets.config.registry_host || secrets.config.swarm_host || '$DOCKER_HOST';
-		var registry = secrets.config.registry;
+		var registry = 'registry:5000';
 		var host = secrets.config.swarm_host;
 		registry = registry ? registry+'/' : '';
 
@@ -87,7 +89,7 @@ module.exports = {
 	    }
 		
 		function deleteRegistryImage(cb) {
-	    	var registry = secrets.config.registry;
+	    	var registry = 'registry:5000';
 			registry = registry ? registry+'/' : '';
 	    	checkNdelete(registry + name, cb);
 	    }

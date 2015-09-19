@@ -1,3 +1,5 @@
+//Expecting the registry as dependency from docker-compose
+
 var exec = require('child_process').exec,
 	spawn = require('child_process').spawn,
 	fs = require('fs'),
@@ -78,7 +80,7 @@ function CreateYml(app) {
 	return yml;
 
 	function appTemplate(app) {
-		var registry = secrets.config.registry;
+		var registry = 'registry:5000';
 		registry = registry ? registry+'/' : '';
 
 		app.dependency = app.dependency || [];
