@@ -1,5 +1,5 @@
 dockerbox:
-  build: ./
+  build: /opt/docker-compose
   ports:
    - "80:80"
    - "2222:22"
