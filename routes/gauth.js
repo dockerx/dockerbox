@@ -5,13 +5,16 @@ var router = express.Router();
 var secrets = require('../services/configuration');
 var gapi = require('googleapis');
 
-var oauth2Client =
-  new gapi.auth.OAuth2(
-    secrets.config.web.client_id,
-    secrets.config.web.client_secret,
-    secrets.config.web.redirect_uris[0]);
+var oauth2Client = gauthEnabled() ? new gapi.auth.OAuth2(
+    secrets.config.gauth.client_id,
+    secrets.config.gauth.client_secret,
+    secrets.config.gauth.redirect_uris[0]) : null;
 
 router.post('/login', function(req, res) {
+  if(!gauthEnabled()) {
+      return res.render('unauthlogin');
+  }
+
   var options = {
     access_type: 'offline',
     scope: [
@@ -21,6 +24,23 @@ router.post('/login', function(req, res) {
   };
   var generatedUrl = oauth2Client.generateAuthUrl(options);
   res.redirect(generatedUrl);
+});
+
+router.post('/unauthlogin', function(req, res) {
+  var name = req.body.name,
+  email = req.body.email;
+  req.session = req.session || {};
+  req.session.tokens = name;
+  req.session.user = {
+    email : email
+  };
+  req.session.destroy = function (cb) {
+    delete req.session.tokens;
+    cb();
+  };
+  var path = req.session.custom_target;
+  delete req.session.custom_target;
+  res.redirect(path || '/');
 });
 
 router.get('/oauth2callback', function(req, res) {
@@ -73,7 +93,9 @@ function setSessionData(req, oauth2Client, tokens, cb) {
   });
 };
 
-
+function gauthEnabled() {
+  return !!secrets.config.gauth.client_secret;
+}
 
 /*
 app.get('/auth/google/callback', 

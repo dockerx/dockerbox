@@ -42,11 +42,12 @@ db.read('qa', function(err, body){
 
 //Redirect all non-www to www except subdomains
 app.get('/*', function (req, res, next) {
-  if (secrets.config.web.domain && !req.headers.host.match(new RegExp('^' + secrets.config.web.domain))) {
-    res.redirect((secrets.config.http || 'http') + '://' + secrets.config.web.domain + req.url);
-  } else {
-    next();     
-  }
+    if(!secrets.config.gauth.domain) return next();
+    if (secrets.config.gauth.domain && !req.headers.host.match(new RegExp('^' + secrets.config.gauth.domain))) {
+        res.redirect((secrets.config.http || 'http') + '://' + secrets.config.gauth.domain + req.url);
+    } else {
+        next();     
+    }
 });
 
 // view engine setup
