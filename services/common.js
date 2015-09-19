@@ -12,15 +12,15 @@ module.exports = {
 
 	proxyRules : function(action, qaname, app, restart) {
 		
-		if(secrets.config.useElb) elb[action](qaname + '.' + secrets.config.mainhost, app.http_forward_host || 'localhost:' + app.http_forward_port); //Main Web
+		if(secrets.config.useElb) elb[action](qaname + '.' + secrets.config.domainName, app.http_forward_host || 'localhost:' + app.http_forward_port); //Main Web
 		else haproxy[action](qaname, app.http_forward_host || app.http_forward_port); //Main Web
 		
 		terminalRules(qaname, app);
 
 		function terminalRules(qaname, app, httpAlso) {
 			if(secrets.config.useElb) {
-				elb[action]('terminal-' + qaname + app.name + '.' + secrets.config.mainhost, app.terminal_forward_host || 'localhost:' + app.terminal_forward_port);
-				httpAlso && elb[action](qaname + app.name + '.' + secrets.config.mainhost, app.http_forward_host || 'localhost:' + app.http_forward_port);
+				elb[action]('terminal-' + qaname + app.name + '.' + secrets.config.domainName, app.terminal_forward_host || 'localhost:' + app.terminal_forward_port);
+				httpAlso && elb[action](qaname + app.name + '.' + secrets.config.domainName, app.http_forward_host || 'localhost:' + app.http_forward_port);
 			} else {
 				haproxy[action]('terminal-' + qaname + app.name, app.terminal_forward_host || app.terminal_forward_port);
 				httpAlso && haproxy[action](qaname + app.name, app.http_forward_host || app.http_forward_port);

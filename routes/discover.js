@@ -15,7 +15,7 @@ router.get('/discover/server/:servername', function(req, res, next) {
 		if(err) return next();
 		body.serverList = getServerList(body.app);
 		body.sshIpMap = (body.compose_status === 0) ? getSshIpPort(body.app) : {};
-		body.domainName = secrets.config.mainhost;
+		body.domainName = secrets.config.domainName;
 		body.common = common.renderData(req);
 		res.render('discoverserver', body);
 	}, req.params.servername);
