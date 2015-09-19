@@ -1,5 +1,5 @@
 dockerbox:
-  image: dockerbox
+  build: ./
   ports:
    - "80:80"
    - "2222:22"
