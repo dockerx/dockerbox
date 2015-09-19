@@ -10,7 +10,7 @@ var exec = require('child_process').exec,
 
 module.exports = {
 	create : function(name, dockerfileString, stream, cb) {
-		var registryHost = secrets.config.registry_host || secrets.config.swarm_host || '$DOCKER_HOST';
+		var registryHost = secrets.config.master_docker_host || '$DOCKER_HOST';
 		var that = this;
 		//create a folder for the dockerfile
 		exec('mkdir -p '+ tempFolder + name, function(err, stdout, stderr) {
@@ -38,7 +38,7 @@ module.exports = {
 	},
 
 	push : function(name, stream, cb) { // push to registry
-		var registryHost = secrets.config.registry_host || secrets.config.swarm_host || '$DOCKER_HOST';
+		var registryHost = secrets.config.master_docker_host || '$DOCKER_HOST';
 		var registry = 'registry:5000';
 		var host = secrets.config.swarm_host;
 		registry = registry ? registry+'/' : '';
@@ -74,7 +74,7 @@ module.exports = {
 	},
 	
 	remove : function(name, cb, imageHost) {
-		var registryHost = secrets.config.registry_host || secrets.config.swarm_host || '$DOCKER_HOST';
+		var registryHost = secrets.config.master_docker_host || '$DOCKER_HOST';
 		var host = secrets.config.swarm_host;
 		var self = this;
 		var command = 'docker';
@@ -121,7 +121,7 @@ module.exports = {
 	},
 
 	listImages : function(cb, imageHost) {
-		var registryHost = secrets.config.registry_host || secrets.config.swarm_host || '$DOCKER_HOST';
+		var registryHost = secrets.config.master_docker_host || '$DOCKER_HOST';
 		var host = secrets.config.swarm_host;
 		var command = "docker";
 		if(host) command += ' -H ' + (imageHost || registryHost);
