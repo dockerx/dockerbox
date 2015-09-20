@@ -37,7 +37,7 @@ router.all(['/admin/database', '/admin/database/*'], function(req, res, next) {
 
     function getUrl(url) {
 	    //Path.join is not working with request.pipe. So this hack for removing the extra / in the secrets.db
-	    return secrets.config.db.replace(/\/$/, '') + url.replace(/^\/admin\/database/, '');
+	    return secrets.GLOBAL.db + url.replace(/^\/admin\/database/, '');
 	}
 });
 

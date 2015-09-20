@@ -39,7 +39,7 @@ module.exports = {
 
 	push : function(name, stream, cb) { // push to registry
 		var registryHost = secrets.config.master_docker_host || '$DOCKER_HOST';
-		var registry = 'registry:5000';
+		var registry = secrets.GLOBAL.registry;
 		var host = secrets.config.swarm_host;
 		registry = registry ? registry+'/' : '';
 
@@ -89,7 +89,7 @@ module.exports = {
 	    }
 		
 		function deleteRegistryImage(cb) {
-	    	var registry = 'registry:5000';
+	    	var registry = secrets.GLOBAL.registry;
 			registry = registry ? registry+'/' : '';
 	    	checkNdelete(registry + name, cb);
 	    }

@@ -80,7 +80,7 @@ function CreateYml(app) {
 	return yml;
 
 	function appTemplate(app) {
-		var registry = 'registry:5000';
+		var registry = secrets.GLOBAL.registry;
 		registry = registry ? registry+'/' : '';
 
 		app.dependency = app.dependency || [];

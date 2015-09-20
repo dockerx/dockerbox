@@ -1,6 +1,7 @@
 //Expecting the elb to be running as a dependent app in docker-compose
 var request = require('superagent'),
-	elbUrl = 'http://elb:9090/',
+	config = require('./configuration'),
+	elbUrl = config.GLOBAL.elbAdmin + '/',
 	genCb = function(err, res){err && console.log(err);};
 
 module.exports = {

@@ -17,19 +17,16 @@ do_master_init() {
     rm -rf /opt/dockerboxsetup/install/*
     mkdir /opt/dockerboxsetup/install/dockerbox
     mkdir /opt/dockerboxsetup/install/elb
-    if [ ! -d /opt/dockerboxsetup/data/couchdb ]; then
-        mkdir -p /opt/dockerboxsetup/data/couchdb
-        
-    fi
+    mkdir -p /opt/dockerboxsetup/data/couchdb
     service docker stop
     killall -9 docker
     docker daemon -H tcp://0.0.0.0:2375&
     sleep 20
-    cd /opt/dockerboxsetup/dockerbox \
+    cd /opt/dockerboxsetup/install/dockerbox \
     && wget https://raw.githubusercontent.com/dockerx/dockerbox/ssi/Dockerfile \
-    && cd /opt/dockerboxsetup/elb \
+    && cd /opt/dockerboxsetup/install/elb \
     && wget https://raw.githubusercontent.com/dockerx/dockerbox-proxy/master/Dockerfile \
-    && cd /opt/dockerboxsetup \
+    && cd /opt/dockerboxsetup/install \
     && wget https://raw.githubusercontent.com/dockerx/dockerbox/ssi/docker-compose.yml \
     && DOCKER_HOST=tcp://0.0.0.0:2375 /usr/local/bin/docker-compose up -d
 }

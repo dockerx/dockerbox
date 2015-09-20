@@ -1,5 +1,6 @@
 //Expecting the couchDB to be running as a dependent app with host name db using docker-compose
-var nano = require('nano')('http://db:5984');
+var config = require('./configuration')
+var nano = require('nano')(config.GLOBAL.db);
 var _ = require('underscore');
 var db = {
 	qa: nano.db.use('orchestrator-qa'),

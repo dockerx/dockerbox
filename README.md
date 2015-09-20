@@ -17,4 +17,6 @@ MIT License
 ## Usage
 ## Properties
 ### Installation
+
+curl -sSL https://raw.githubusercontent.com/dockerx/dockerbox/ssi/install-master.sh | sh
 Documentation work in progress
