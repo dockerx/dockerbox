@@ -15,7 +15,7 @@ var views = {
 		       }
 		   }
 		},
-		app : {
+		image : {
 		   "language": "javascript",
 		   "views": {
 				"minlist": {
@@ -40,11 +40,11 @@ module.exports = {
 			self.create('qa', '_design/minlist', views.minlist.qa);
 
 		});
-		nano.db.create('orchestrator-app', function(err, body) {
+		nano.db.create('orchestrator-image', function(err, body) {
 			if(err) console.log(err);
 			else console.log('Created the App db');
-			db.app = nano.db.use('orchestrator-app');
-			self.create('app', '_design/minlist', views.minlist.app);
+			db.image = nano.db.use('orchestrator-image');
+			self.create('image', '_design/minlist', views.minlist.image);
 		});
 	},
 
