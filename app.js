@@ -21,6 +21,17 @@ http.globalAgent.maxSockets = Infinity;
 var myIp = require('os').networkInterfaces().eth0[0].address;
 elb.default(myIp + ':' + app.get('port'));
 
+if(process.env.DOCKERBOX_INIT) {
+    var ncp = require('ncp').ncp;
+    ncp.limit = 16;
+    ncp('./couchdb_schema', './couchdb', function (err) {
+        if (err) {
+            return console.error('CouchDB Schema upload FAILED : ', err);
+        }
+        console.log('CouchDB Schema upload completed');
+    });
+}
+
 //Redirect all non-www to www except subdomains
 app.get('/*', function (req, res, next) { console.log(req);
     var isHttps = !!req.connection.encrypted;

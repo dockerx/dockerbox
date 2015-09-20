@@ -2,6 +2,8 @@ dockerbox:
   build: ./dockerbox
   ports:
    - "2222:22"
+  volumes:
+   - /opt/dockerboxsetup/data/couchdb:/couchdb
   links:
    - couchdb:db
    - registry:registry
@@ -10,6 +12,8 @@ registry:
   image: registry:2
 couchdb:
   image: klaemo/couchdb
+  volumes:
+   - /opt/dockerboxsetup/data/couchdb:/usr/local/var/lib/couchdb
 elb:
   build: ./elb
   ports:

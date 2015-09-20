@@ -13,10 +13,14 @@ do_master_init() {
     #Install docker compose
     curl -L https://github.com/docker/compose/releases/download/1.4.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
     chmod +x /usr/local/bin/docker-compose
-    mkdir -p /opt/dockerboxsetup
-    rm -rf /opt/dockerboxsetup/*
-    mkdir /opt/dockerboxsetup/dockerbox
-    mkdir /opt/dockerboxsetup/elb
+    mkdir -p /opt/dockerboxsetup/install
+    rm -rf /opt/dockerboxsetup/install/*
+    mkdir /opt/dockerboxsetup/install/dockerbox
+    mkdir /opt/dockerboxsetup/install/elb
+    if [ ! -d /opt/dockerboxsetup/data/couchdb ]; then
+        mkdir -p /opt/dockerboxsetup/data/couchdb
+        
+    fi
     service docker stop
     killall -9 docker
     docker daemon -H tcp://0.0.0.0:2375&
