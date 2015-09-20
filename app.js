@@ -8,8 +8,8 @@ var express = require('express'),
     db = require('./services/db'),
     common = require('./services/common'),
     http = require('http'),
-    secrets = require('./services/configuration'),
-    haproxy = require("nodejs-haproxy");
+    secrets = require('./services/configuration')
+    elb = require('./services/elb');
 
 var app = express(),
     routes = require('./routes/index');
@@ -17,14 +17,8 @@ var app = express(),
 app.set('port', process.env.PORT || 3000);
 http.globalAgent.maxSockets = Infinity;
 
-haproxy.init({
-    routeList : [
-        { name : 'www.', targethost  : 'localhost:' + app.get('port') },
-        { name : secrets.config.domainName, targethost  : 'localhost:' + app.get('port') }
-    ],
-    defaultBackend : 'elb',
-    hapAdminPort : 9100
-});
+//Setting the default backend in the elb
+elb.default('localhost:' + app.get('port'));
 
 //Redirect all non-www to www except subdomains
 app.get('/*', function (req, res, next) { console.log(req);

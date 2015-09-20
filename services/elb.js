@@ -29,3 +29,16 @@ module.exports = {
 			.end(cb);
 	} 
 }
+
+
+
+/*
+
+
+http://localhost:9090/currentconfig
+http://localhost:9090/replaceconfig
+
+
+{"HostRules":{"websomtep.":{"Rule":"pathbeg","Backend":"XVlBezgbaiC"}},"BackendStruct":{"XVlBezgbaiC":["50.112.1e16.235:80"]}}
+
+*/

@@ -4,7 +4,7 @@ MAINTAINER Alan Joseph<alanjosephmec@gmail.com>
 RUN apt-get install -y software-properties-common \
 	&& apt-add-repository -y ppa:vbernat/haproxy-1.5 \
 	&& apt-get update \
-	&& apt-get install -y curl python-pip haproxy nodejs npm openssh-server\
+	&& apt-get install -y curl python-pip haproxy nodejs npm openssh-server vim\
 	&& curl -sSL https://get.docker.com/ | sh \
 	&& ln -s /usr/bin/nodejs /usr/bin/node \
 	&& pip install -U docker-compose \

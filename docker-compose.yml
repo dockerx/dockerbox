@@ -1,7 +1,6 @@
 dockerbox:
   build: ./dockerbox
   ports:
-   - "80:80"
    - "2222:22"
   links:
    - couchdb:db
@@ -13,3 +12,5 @@ couchdb:
   image: klaemo/couchdb
 elb:
   build: ./elb
+  ports:
+   - "80:80"

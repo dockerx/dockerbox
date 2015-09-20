@@ -23,9 +23,9 @@ do_master_init() {
     sleep 20
     cd /opt/dockerboxsetup/dockerbox \
     && wget https://raw.githubusercontent.com/dockerx/dockerbox/ssi/Dockerfile \
-    cd /opt/dockerboxsetup/elb \
+    && cd /opt/dockerboxsetup/elb \
     && wget https://raw.githubusercontent.com/dockerx/dockerbox-proxy/master/Dockerfile \
-    cd /opt/dockerboxsetup \
+    && cd /opt/dockerboxsetup \
     && wget https://raw.githubusercontent.com/dockerx/dockerbox/ssi/docker-compose.yml \
     && DOCKER_HOST=tcp://0.0.0.0:2375 /usr/local/bin/docker-compose up -d
 }
