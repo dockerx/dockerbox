@@ -1,5 +1,5 @@
 //Expecting the couchDB to be running as a dependent app with host name db using docker-compose
-var config = require('./configuration',
+var config = require('./configuration'),
 	nano = require('nano')(config.GLOBAL.db),
 	_ = require('underscore'),
 	db = {};
@@ -7,12 +7,25 @@ var config = require('./configuration',
 // Constants
 var views = {
 	minlist : {
-	   "language": "javascript",
-	   "views": {
-	       "minlist": {
-	           "map": "function(doc) {\n  emit(doc.name, doc);\n}"
-	       }
-	   }
+		qa : {
+		   "language": "javascript",
+		   "views": {
+		       "minlist": {
+		           "map": "function(doc) {\n  emit(doc.name, doc);\n}"
+		       }
+		   }
+		},
+		app : {
+		   "language": "javascript",
+		   "views": {
+				"minlist": {
+					"map": "function(doc) {\n  emit(doc.name, doc);\n}"
+				},
+				"cloneof": {
+					"map": "function(doc) {\n  emit(doc.clone_of, doc);\n}"
+				}
+			}
+		}
 	}
 }
 
@@ -24,14 +37,14 @@ module.exports = {
 			if(err) console.log(err);
 			else console.log('Created the Qa db');
 			db.qa = nano.db.use('orchestrator-qa');
-			self.create('qa', '_design/minlist', views.minlist);
+			self.create('qa', '_design/minlist', views.minlist.qa);
 
 		});
 		nano.db.create('orchestrator-app', function(err, body) {
 			if(err) console.log(err);
 			else console.log('Created the App db');
 			db.app = nano.db.use('orchestrator-app');
-			self.create('app', '_design/minlist', views.minlist);
+			self.create('app', '_design/minlist', views.minlist.app);
 		});
 	},
 
