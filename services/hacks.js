@@ -39,13 +39,13 @@ module.exports = {
 			});
 			args.push(nodeHosts.join(','));
 
-			var managerStart = spawn('docker', args, {"cwd":tempFolder + name, "env" : process.env});
+			var managerStart = spawn('docker', args, {"env" : process.env});
 
 			managerStart.stdout.on('data', function(data) { 
-				console.log(data); 
+				console.log(data ? data.toString('utf8') : ''); 
 			});
 			managerStart.stdout.on('end', function(data) {
-				console.log(data);
+				console.log(data ? data.toString('utf8') : '');
 			});
 			managerStart.on('exit', function(code) {
 				console.log('Exit with CODE: ' + code);
