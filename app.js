@@ -26,7 +26,7 @@ if(process.env.DOCKERBOX_INIT) {
 }
 
 //Redirect all non-www to www except subdomains
-app.get('/*', function (req, res, next) { console.log(req);
+app.get('/*', function (req, res, next) {
     var isHttps = !!req.connection.encrypted;
     if(!secrets.config.gauth.domain) return next();
     if (secrets.config.gauth.domain && !req.headers.host.match(new RegExp('^' + secrets.config.gauth.domain))) {
