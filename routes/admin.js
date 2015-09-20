@@ -33,7 +33,10 @@ router.post('/admin/configuration', function(req, res, next){
 
 	secrets.config = config;
 	//if( (JSON.stringify(oldNodeIps) != JSON.stringify(newNodeIps) ) && config.cluster.master.internal_ip) hacks.swarmManager();
-	hacks.swarmManager();
+	config.swarm_host = null;
+	hacks.swarmManager(function(port){
+		config.swarm_host = "tcp://0.0.0.0:" + port;
+	});
 	res.redirect('/admin/configuration');
 });
 

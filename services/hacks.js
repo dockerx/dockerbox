@@ -22,14 +22,16 @@ module.exports = {
 		async.series(tasks, cb);
 	},
 	swarmManager : function(cb) {
-		var name = 'swarm_manager';
+		var name = 'swarm_manager',
+		port = '2000';
+
 		masterIp = config.config.cluster.master.internal_ip;
 		process.env.DOCKER_HOST = 'tcp://' + masterIp + ':2375';
 		
 		stopSwarm(startSwarm);
 
 		function startSwarm() {
-			var args = ['run', '-d', '-p', '2000:2375', '--name="' + name + '"', 'swarm', 'manage'],
+			var args = ['run', '-d', '-p', port + ':2375', '--name="' + name + '"', 'swarm', 'manage'],
 			nodes = config.config.cluster.nodes,
 			nodeHosts = [];
 
@@ -49,6 +51,7 @@ module.exports = {
 			});
 			managerStart.on('exit', function(code) {
 				console.log('Exit with CODE: ' + code);
+				if(code === 0) cb(port);
 			});
 		}
 		

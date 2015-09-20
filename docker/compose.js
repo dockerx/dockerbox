@@ -19,7 +19,7 @@ module.exports = {
 			var ymlString = CreateYml(serverStructure);
 		    fs.writeFileSync(tempFolder + name + '/docker-compose.yml', ymlString);
 
-			process.env.DOCKER_HOST = secrets.config.swarm_host;
+			process.env.DOCKER_HOST = getDockerHost();
 			var compose = spawn('docker-compose', ['up', '-d'], {"cwd":tempFolder + name, "env" : process.env});
 
 			compose.stdout.on('data', function(data) { 
@@ -42,7 +42,7 @@ module.exports = {
 	},
 	stop: function(name) {
 		var command = 'COMPOSE_FILE=' + tempFolder + name + '/docker-compose.yml docker-compose stop';
-		var host = secrets.config.swarm_host;
+		var host = getDockerHost();
 		if(host) command = 'DOCKER_HOST=' + host + ' ' + command;
 		exec(command, function(err, stdout, stderr) {
 			if(err) {
@@ -60,7 +60,7 @@ module.exports = {
 	},
 	remove: function(name) {
 		var command = 'COMPOSE_FILE=' + tempFolder + name + '/docker-compose.yml docker-compose rm --force';
-		var host = secrets.config.swarm_host;
+		var host = getDockerHost();
 		if(host) command = 'DOCKER_HOST=' + host + ' ' + command;
 		exec(command, function(err, stdout, stderr) {
 			if(err) {
@@ -70,7 +70,7 @@ module.exports = {
 	}
 };
 
-
+//Utils 
 function CreateYml(app) {
 	var yml = appTemplate(app);
 	app.dependency = app.dependency || [];
@@ -103,7 +103,7 @@ function CreateYml(app) {
 
 function getTargetHosts(qaname, app, done) {
 	var command = 'COMPOSE_FILE=' + tempFolder + qaname + '/docker-compose.yml docker-compose port ';
-	var host = secrets.config.swarm_host;
+	var host = getDockerHost();
 	if(host) command = 'DOCKER_HOST=' + host + ' ' + command;
 	var funStack = [];
 	assignHosts(app);
@@ -132,6 +132,11 @@ function getTargetHosts(qaname, app, done) {
 			cb && cb(null);
 		});
 	}
+}
+
+function getDockerHost() {
+	if(secrets.config.swarm_host) return secrets.config.swarm_host;
+	return 'tcp://' + secrets.config.cluster.master.internal_ip + ':2375';
 }
 
 
