@@ -32,7 +32,8 @@ router.post('/admin/configuration', function(req, res, next){
 	newNodeIps = getNodeIps(secrets.config);
 
 	secrets.config = config;
-	if( (JSON.stringify(oldNodeIps) != JSON.stringify(newNodeIps) ) && config.cluster.master.internal_ip) hacks.swarmManager();
+	//if( (JSON.stringify(oldNodeIps) != JSON.stringify(newNodeIps) ) && config.cluster.master.internal_ip) hacks.swarmManager();
+	hacks.swarmManager();
 	res.redirect('/admin/configuration');
 });
 
