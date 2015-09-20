@@ -1,0 +1,31 @@
+//Expecting the elb to be running as a dependent app in docker-compose
+var request = require('superagent'),
+	elbUrl = 'http://elb:9090/',
+	genCb = function(err, res){err && console.log(err);};
+
+module.exports = {
+	add: function(subDomainName, backendUri, cb) {		
+		cb = cb || genCb;
+		request
+			.post(elbUrl + 'addnewproxy')
+			.send({"hostname" : subDomainName + '.', "rule" : "pathbeg", "backend" : {"uris" : [backendUri]}})
+			.set('Accept', 'application/json')
+			.end(cb);
+	},
+	remove: function(subDomainName, backendUri, cb) {
+		cb = cb || genCb;
+		request
+			.post(elbUrl + 'removehostrule')
+			.send({"hostname" : subDomainName + '.'})
+			.set('Accept', 'application/json')
+			.end(cb);
+	},
+	default: function(defaultHost) {
+		cb = cb || genCb;
+		request
+			.post(elbUrl + 'addbackendsystem')
+			.send({"backend":"default", "hosturi":defaultHost})
+			.set('Accept', 'application/json')
+			.end(cb);
+	} 
+}

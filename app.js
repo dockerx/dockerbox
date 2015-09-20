@@ -18,19 +18,12 @@ app.set('port', process.env.PORT || 3000);
 http.globalAgent.maxSockets = Infinity;
 
 haproxy.init({
-    defaultBackend : 'localhost:' + app.get('port'),
+    routeList : [
+        { name : 'www.', targethost  : 'localhost:' + app.get('port') },
+        { name : secrets.config.domainName, targethost  : 'localhost:' + app.get('port') }
+    ],
+    defaultBackend : 'elb',
     hapAdminPort : 9100
-});
-
-db.read('qa', function(err, body){
-    if(err) {
-        console.log("DB read error", err);
-        return;
-    }
-    body.rows.forEach(function(row){
-        common.proxyRules('add', row.value.name, row.value.app);
-    });
-    haproxy.restart();
 });
 
 //Redirect all non-www to www except subdomains

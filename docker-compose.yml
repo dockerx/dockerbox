@@ -1,16 +1,15 @@
 dockerbox:
-  image: dockerbox
+  build: ./dockerbox
   ports:
    - "80:80"
    - "2222:22"
   links:
    - couchdb:db
    - registry:registry
+   - elb:elb
 registry:
   image: registry:2
-  ports:
-   - "5000:5000"
 couchdb:
   image: klaemo/couchdb
-  ports:
-   - "5984:5984"
+elb:
+  build: ./elb

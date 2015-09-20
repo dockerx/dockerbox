@@ -1,18 +1,15 @@
 var secrets = require('./configuration'),
-	haproxy = require("nodejs-haproxy"),
+	elb = require("./elb"),
 	db = require("./db");
-
-haproxy.add = haproxy.addHttpProxy;
-haproxy.remove = haproxy.removeHttpProxy;
 
 module.exports = {
 
 	proxyRules : function(action, qaname, app, restart) {
-		haproxy[action](qaname, app.http_forward_host || ('localhost:' + app.http_forward_port)); //Main Web
+		elb[action](qaname, app.http_forward_host || ('localhost:' + app.http_forward_port)); //Main Web
 		terminalRules(qaname, app);
 		function terminalRules(qaname, app, httpAlso) {
-			haproxy[action]('terminal-' + qaname + app.name, app.terminal_forward_host || ('localhost:' + app.terminal_forward_port));
-			httpAlso && haproxy[action](qaname + app.name, app.http_forward_host || ('localhost:' + app.http_forward_port));
+			elb[action]('terminal-' + qaname + app.name, app.terminal_forward_host || ('localhost:' + app.terminal_forward_port));
+			httpAlso && elb[action](qaname + app.name, app.http_forward_host || ('localhost:' + app.http_forward_port));
 			app.dependency = app.dependency || [];
 			app.dependency.forEach(function(d){
 				terminalRules(qaname, d, true);
