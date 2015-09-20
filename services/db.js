@@ -1,13 +1,40 @@
 //Expecting the couchDB to be running as a dependent app with host name db using docker-compose
-var config = require('./configuration')
-var nano = require('nano')(config.GLOBAL.db);
-var _ = require('underscore');
-var db = {
-	qa: nano.db.use('orchestrator-qa'),
-	image: nano.db.use('orchestrator-app')
-};
+var config = require('./configuration',
+	nano = require('nano')(config.GLOBAL.db),
+	_ = require('underscore'),
+	db = {};
+
+// Constants
+var views = {
+	minlist : {
+	   "language": "javascript",
+	   "views": {
+	       "minlist": {
+	           "map": "function(doc) {\n  emit(doc.name, doc);\n}"
+	       }
+	   }
+	}
+}
+
 
 module.exports = {
+	init : function() {
+		var self = this;
+		nano.db.create('orchestrator-qa', function(err, body) {
+			if(err) console.log(err);
+			else console.log('Created the Qa db');
+			db.qa = nano.db.use('orchestrator-qa');
+			self.create('qa', '_design/minlist', views.minlist);
+
+		});
+		nano.db.create('orchestrator-app', function(err, body) {
+			if(err) console.log(err);
+			else console.log('Created the App db');
+			db.app = nano.db.use('orchestrator-app');
+			self.create('app', '_design/minlist', views.minlist);
+		});
+	},
+
 	create: function(dbname, name, data, cb) {
 		db[dbname].insert(data, name, function(err, body, header) {
 			if (err) {
@@ -52,5 +79,8 @@ module.exports = {
 			cb(err, body);
 		});
 	}
-
 }
+
+
+
+
