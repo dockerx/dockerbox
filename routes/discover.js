@@ -51,7 +51,7 @@ router.get('/discover/server/:servername', function(req, res, next) {
 		function getIpPort(fh) {
 			if(!fh) return '';
 			var s = fh.split(':');
-			return 'ssh root@' + (secrets.config.ipmap[s[0]] || secrets.config.swarm_host) + ' -p ' + s[1];
+			return 'ssh root@' + (secrets.config.clusterNode[s[0]] || secrets.config.swarm_host) + ' -p ' + s[1];
 		};
 
 		return ser;
