@@ -20,7 +20,7 @@ module.exports = {
 			.set('Accept', 'application/json')
 			.end(cb);
 	},
-	default: function(defaultHost) {
+	default: function(defaultHost, cb) {
 		cb = cb || genCb;
 		request
 			.post(elbUrl + 'addbackendsystem')

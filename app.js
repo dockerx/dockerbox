@@ -18,7 +18,8 @@ app.set('port', process.env.PORT || 3000);
 http.globalAgent.maxSockets = Infinity;
 
 //Setting the default backend in the elb
-elb.default('localhost:' + app.get('port'));
+var myIp = require('os').networkInterfaces().eth0[0].address;
+elb.default(myIp + ':' + app.get('port'));
 
 //Redirect all non-www to www except subdomains
 app.get('/*', function (req, res, next) { console.log(req);
