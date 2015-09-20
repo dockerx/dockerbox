@@ -35,7 +35,7 @@ router.post('/admin/configuration', function(req, res, next){
 	//if( (JSON.stringify(oldNodeIps) != JSON.stringify(newNodeIps) ) && config.cluster.master.internal_ip) hacks.swarmManager();
 	config.swarm_host = null;
 	hacks.swarmManager(function(port){
-		config.swarm_host = "tcp://0.0.0.0:" + port;
+		config.swarm_host = 'tcp://' + config.cluster.master.internal_ip + ':' + port;
 	});
 	res.redirect('/admin/configuration');
 });
