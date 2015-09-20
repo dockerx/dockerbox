@@ -24,7 +24,7 @@ elb.default(myIp + ':' + app.get('port'));
 if(process.env.DOCKERBOX_INIT) {
     var ncp = require('ncp').ncp;
     ncp.limit = 16;
-    ncp('./couchdb_schema', './couchdb', function (err) {
+    ncp('./couchdb_schema', '/couchdb', function (err) {
         if (err) {
             return console.error('CouchDB Schema upload FAILED : ', err);
         }
