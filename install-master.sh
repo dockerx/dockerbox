@@ -20,7 +20,7 @@ do_master_init() {
     mkdir -p /opt/dockerboxsetup/data/couchdb
     service docker stop
     killall -9 docker
-    docker daemon -H tcp://0.0.0.0:2375&
+    docker daemon -H tcp://0.0.0.0:2375 --insecure-registry registry:5000&
     sleep 20
     cd /opt/dockerboxsetup/install/dockerbox \
     && wget https://raw.githubusercontent.com/dockerx/dockerbox/ssi/Dockerfile \
