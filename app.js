@@ -9,7 +9,7 @@ var express = require('express'),
     common = require('./services/common'),
     http = require('http'),
     secrets = require('./services/configuration'),
-    haproxy = secrets.config.useElb ? {} : require("nodejs-haproxy");
+    haproxy = require("nodejs-haproxy");
 
 var app = express(),
     routes = require('./routes/index');
@@ -17,17 +17,10 @@ var app = express(),
 app.set('port', process.env.PORT || 3000);
 http.globalAgent.maxSockets = Infinity;
 
-if(secrets.config.useElb) {
-    require('elb').start(secrets.config.elbPort || 80, {
-        defaultTarget : 'localhost:' + app.get('port'),
-        errorMessage : 'Seems like there is no application running in your server.'
-    });
-} else {
-    haproxy.init({
-        defaultBackend : 'localhost:' + app.get('port'),
-        hapAdminPort : 9100
-    });
-}
+haproxy.init({
+    defaultBackend : 'localhost:' + app.get('port'),
+    hapAdminPort : 9100
+});
 
 db.read('qa', function(err, body){
     if(err) {
@@ -37,7 +30,7 @@ db.read('qa', function(err, body){
     body.rows.forEach(function(row){
         common.proxyRules('add', row.value.name, row.value.app);
     });
-    !secrets.config.useElb && haproxy.restart();
+    haproxy.restart();
 });
 
 //Redirect all non-www to www except subdomains

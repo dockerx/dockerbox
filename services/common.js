@@ -1,38 +1,23 @@
-var elb = require("elb"),
-	secrets = require('./configuration'),
-	haproxy = secrets.config.useElb ? {} : require("nodejs-haproxy"),
+var secrets = require('./configuration'),
+	haproxy = require("nodejs-haproxy"),
 	db = require("./db");
 
-if(!secrets.config.useElb) {
-	haproxy.add = haproxy.addHttpProxy;
-	haproxy.remove = haproxy.removeHttpProxy;
-}
+haproxy.add = haproxy.addHttpProxy;
+haproxy.remove = haproxy.removeHttpProxy;
 
 module.exports = {
 
 	proxyRules : function(action, qaname, app, restart) {
-		
-		if(secrets.config.useElb) elb[action](qaname + '.' + secrets.config.domainName, app.http_forward_host || 'localhost:' + app.http_forward_port); //Main Web
-		else haproxy[action](qaname, app.http_forward_host || app.http_forward_port); //Main Web
-		
+		haproxy[action](qaname, app.http_forward_host || ('localhost:' + app.http_forward_port)); //Main Web
 		terminalRules(qaname, app);
-
 		function terminalRules(qaname, app, httpAlso) {
-			if(secrets.config.useElb) {
-				elb[action]('terminal-' + qaname + app.name + '.' + secrets.config.domainName, app.terminal_forward_host || 'localhost:' + app.terminal_forward_port);
-				httpAlso && elb[action](qaname + app.name + '.' + secrets.config.domainName, app.http_forward_host || 'localhost:' + app.http_forward_port);
-			} else {
-				haproxy[action]('terminal-' + qaname + app.name, app.terminal_forward_host || app.terminal_forward_port);
-				httpAlso && haproxy[action](qaname + app.name, app.http_forward_host || app.http_forward_port);
-			}
+			haproxy[action]('terminal-' + qaname + app.name, app.terminal_forward_host || ('localhost:' + app.terminal_forward_port));
+			httpAlso && haproxy[action](qaname + app.name, app.http_forward_host || ('localhost:' + app.http_forward_port));
 			app.dependency = app.dependency || [];
 			app.dependency.forEach(function(d){
 				terminalRules(qaname, d, true);
 			});
 		}
-
-		//restart is not a good experience, so will fo only when explisitly mentioned
-		!secrets.config.useElb && restart && haproxy.restart();
 	},
 
 	completeAction : function(dbName, stream, exitCode, updateData, name) {

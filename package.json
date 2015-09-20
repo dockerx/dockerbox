@@ -21,7 +21,6 @@
     "dockerode": "2.1.1",
     "underscore": "^1.8.3",
     "request" : "^2.53.0",
-    "elb": "git://github.com/dockerx/elb.git",
     "nodejs-haproxy": "git://github.com/dockerx/nodejs-haproxy.git"
   }
 }
