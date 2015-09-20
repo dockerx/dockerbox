@@ -25,4 +25,11 @@ RUN git config --global url."https://".insteadOf git:// \
 	&& cd dockerbox \
 	&& npm install
 
-CMD ["/usr/sbin/sshd", "-D"]
+RUN touch /dockerboxinit.sh \
+	&& chmod +x /dockerboxinit.sh \
+	&& echo \#\!/bin/bash >> /dockerboxinit.sh \
+	&& echo 'make install' >> /dockerboxinit.sh \
+
+WORKDIR /dockerbox
+
+CMD sh -c /dockerboxinit.sh && /usr/sbin/sshd -D
