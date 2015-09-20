@@ -41,12 +41,13 @@ db.read('qa', function(err, body){
 });
 
 //Redirect all non-www to www except subdomains
-app.get('/*', function (req, res, next) {
+app.get('/*', function (req, res, next) { console.log(req);
+    var isHttps = !!req.connection.encrypted;
     if(!secrets.config.gauth.domain) return next();
     if (secrets.config.gauth.domain && !req.headers.host.match(new RegExp('^' + secrets.config.gauth.domain))) {
-        res.redirect((secrets.config.http || 'http') + '://' + secrets.config.gauth.domain + req.url);
+        res.redirect((isHttps? 'https' : 'http') + '://' + secrets.config.gauth.domain + req.url);
     } else {
-        next();     
+        next();
     }
 });
 
