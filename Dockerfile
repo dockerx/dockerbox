@@ -28,7 +28,7 @@ RUN git config --global url."https://".insteadOf git:// \
 RUN touch /dockerboxinit.sh \
 	&& chmod +x /dockerboxinit.sh \
 	&& echo \#\!/bin/bash >> /dockerboxinit.sh \
-	&& echo 'make install' >> /dockerboxinit.sh \
+	&& echo 'make install' >> /dockerboxinit.sh
 
 WORKDIR /dockerbox
 

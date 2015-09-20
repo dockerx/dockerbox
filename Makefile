@@ -1,4 +1,4 @@
-install:
+nstall:
 	git checkout ssi;
 	git pull origin ssi;
 	npm install;
