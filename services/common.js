@@ -77,6 +77,16 @@ module.exports = {
 	        if(req.url.match(path)) next();
 	        else middleware.apply(this, arguments);
 	    };
+	},
+
+	getClusterNodes : function() {
+		var nodes = {},
+		cData = secrets.config.cluster;
+		nodes[cData.master.internal_ip] = cData.master.public_ip;
+		cData.nodes.forEach && cData.nodes.forEach(function(n) {
+			nodes[n.internal_ip] = n.public_ip;
+		});
+		return nodes;
 	}
 };
 

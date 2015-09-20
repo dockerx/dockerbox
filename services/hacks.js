@@ -1,10 +1,11 @@
 
 
 var secrets = require('./configuration');
+var secrets = require('./common');
 var dockerImage = require('../docker/image.js');
 var async = require('async');
 
-var imageHosts = Object.keys(secrets.config.clusterNode).map(function(ip){return 'tcp://' + ip + ':2375';});
+var imageHosts = Object.keys(common.getClusterNodes()).map(function(ip){return 'tcp://' + ip + ':2375';});
 
 module.exports = {
 	removeImage : function(name, cb) {
