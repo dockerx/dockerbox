@@ -8,4 +8,4 @@ block content
 			textarea(name='config')=JSON.stringify(config, null, 4)
 			input.button(type="submit" value="Update")
 		h3 Adding a new Node to the cluster
-		p='1. Add the ip details in the format {"internal_ip" : "", "public_ip" : ""} to the nodes array in the cluster.\n2.And run the command ' + newNodeSetup + 'as a root user in that node.'
+		p!='1. Add the ip details in the format {"internal_ip" : "", "public_ip" : ""} to the nodes array in the cluster.<br>2.And run the command ' + newNodeSetup + 'as a root user in that node.'
