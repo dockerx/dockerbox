@@ -23,11 +23,11 @@ do_master_init() {
     docker daemon -H tcp://0.0.0.0:2375 --insecure-registry registry:5000&
     sleep 10
     cd /opt/dockerboxsetup/install/dockerbox \
-    && wget https://raw.githubusercontent.com/dockerx/dockerbox/ssi/Dockerfile \
+    && wget https://raw.githubusercontent.com/dockerx/dockerbox/master/Dockerfile \
     && cd /opt/dockerboxsetup/install/elb \
     && wget https://raw.githubusercontent.com/dockerx/dockerbox-proxy/master/Dockerfile \
     && cd /opt/dockerboxsetup/install \
-    && wget https://raw.githubusercontent.com/dockerx/dockerbox/ssi/docker-compose.yml \
+    && wget https://raw.githubusercontent.com/dockerx/dockerbox/master/docker-compose.yml \
     && DOCKER_HOST=tcp://0.0.0.0:2375 /usr/local/bin/docker-compose up -d
 }
 do_master_init

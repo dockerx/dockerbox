@@ -1,6 +1,5 @@
 install:
-	git checkout ssi;
-	git pull origin ssi;
+	git pull origin master;
 	npm install;
 	mv secrets_sample.json secrets.json
 	mkdir -p logs

@@ -37,7 +37,7 @@ module.exports = {
 
 			nodeHosts.push(masterIp + ':2375');
 			nodes.forEach && nodes.forEach(function(n){
-				nodeHosts.push(n.internal_ip + ':2375');
+				n.internal_ip && nodeHosts.push(n.internal_ip + ':2375');
 			});
 			args.push(nodeHosts.join(','));
 

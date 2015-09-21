@@ -13,7 +13,7 @@ router.get('/admin/configuration', function(req, res, next){
 	res.render('configuration', {
 		common : common.renderData(req),
 		config : secrets.config,
-		newNodeSetup : 'curl -sSL https://raw.githubusercontent.com/dockerx/dockerbox/ssi/node-setup.sh | sh -s ' + (secrets.config.cluster.master.internal_ip || '<master-ip>')
+		newNodeSetup : 'curl -sSL https://raw.githubusercontent.com/dockerx/dockerbox/master/node-setup.sh | sh -s ' + (secrets.config.cluster.master.internal_ip || '<master-ip>')
 	});
 });
 
@@ -64,7 +64,7 @@ function getNodeIps(cfg) {
 	nodes = cfg.cluster.nodes;
 	nodeHosts.push(cfg.cluster.master.internal_ip);
 	nodes.forEach && nodes.forEach(function(n){
-		nodeHosts.push(n.internal_ip);
+		n.internal_ip && nodeHosts.push(n.internal_ip);
 	});
 	return nodeHosts;
 }
