@@ -17,6 +17,9 @@ MIT License
 ## Usage
 ## Properties
 ### Installation
-
+Installing DockerBox
 curl -sSL https://raw.githubusercontent.com/dockerx/dockerbox/ssi/install-master.sh | sh
+
+Set-up script for a new node in the Dockerbox cluster.
+curl -sSL https://raw.githubusercontent.com/dockerx/dockerbox/ssi/install-node.sh | sh -s <node-ip>
 Documentation work in progress

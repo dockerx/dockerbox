@@ -12,7 +12,8 @@ router.get('/admin/configuration', function(req, res, next){
 	if(notAdmin(req)) return next();
 	res.render('configuration', {
 		common : common.renderData(req),
-		config : secrets.config
+		config : secrets.config,
+		newNodeSetup : 'curl -sSL https://raw.githubusercontent.com/dockerx/dockerbox/ssi/install-node.sh | sh -s ' + (config.cluster.master.internal_ip || '<master-ip>')
 	});
 });
 

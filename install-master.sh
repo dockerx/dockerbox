@@ -1,7 +1,6 @@
 #!/bin/sh
 #
 
-
 do_docker_install() {
     curl -sSL https://get.docker.com/ | sh
 }
@@ -20,8 +19,9 @@ do_master_init() {
     mkdir -p /opt/dockerboxsetup/data/couchdb
     service docker stop
     killall -9 docker
+    echo '0.0.0.0 registry' >> /etc/hosts
     docker daemon -H tcp://0.0.0.0:2375 --insecure-registry registry:5000&
-    sleep 20
+    sleep 10
     cd /opt/dockerboxsetup/install/dockerbox \
     && wget https://raw.githubusercontent.com/dockerx/dockerbox/ssi/Dockerfile \
     && cd /opt/dockerboxsetup/install/elb \
