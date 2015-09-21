@@ -40,7 +40,6 @@ module.exports = {
 	push : function(name, stream, cb) { // push to registry
 		var registryHost = getRegistryHost() || '$DOCKER_HOST';
 		var registry = secrets.GLOBAL.registry;
-		var host = secrets.config.swarm_host;
 		registry = registry ? registry+'/' : '';
 
 		if(!registry) {
@@ -50,7 +49,7 @@ module.exports = {
 
 		//Retag the image for your local repoistory
 		var command = 'docker';
-	    if(host) command += ' -H ' + registryHost; 	
+	    command += ' -H ' + registryHost; 	
 		exec(command + ' tag ' + name + ':latest ' + registry + name + ':latest', function(err, stdout, stderr) {
 			if(err||stdout||stderr) console.log(err, stdout, stderr);
 			if(err) return;
@@ -75,10 +74,9 @@ module.exports = {
 	
 	remove : function(name, cb, imageHost) {
 		var registryHost = getRegistryHost() || '$DOCKER_HOST';
-		var host = secrets.config.swarm_host;
 		var self = this;
 		var command = 'docker';
-	    if(host) command += ' -H ' + (imageHost || registryHost); 
+	    command += ' -H ' + (imageHost || registryHost); 
 
 	    async.parallel([deleteLocalImage, deleteRegistryImage], function(err, result){
 	    	cb(err);
@@ -122,9 +120,8 @@ module.exports = {
 
 	listImages : function(cb, imageHost) {
 		var registryHost = getRegistryHost() || '$DOCKER_HOST';
-		var host = secrets.config.swarm_host;
 		var command = "docker";
-		if(host) command += ' -H ' + (imageHost || registryHost);
+		command += ' -H ' + (imageHost || registryHost);
 		command += " images | awk '{print $1}'";
 		exec(command, function(err, stdout, stderr){
 			if(err) return cb(err);
