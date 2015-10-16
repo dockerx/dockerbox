@@ -1,5 +1,5 @@
 dockerbox:
-  build: ./dockerbox
+  image: dockerx/dockerbox
   ports:
    - "2222:22"
   volumes:
@@ -17,6 +17,6 @@ couchdb:
   volumes:
    - /opt/dockerboxsetup/data/couchdb:/usr/local/var/lib/couchdb
 elb:
-  build: ./elb
+  image: dockerx/elb
   ports:
    - "80:80"
